@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import pkg_resources
 import sys
 
 from catkin_pkg.packages import find_packages
@@ -29,6 +30,10 @@ def main(argv=sys.argv[1:]):
         nargs='+',
         help='What (meta)packages to include in the image.')
     parser.add_argument(
+       '--template_packages',
+       nargs='+',
+       help='What packages to use for template.')
+    parser.add_argument(
         '--os-name',
         required=True,
         help="The OS name (e.g. 'ubuntu')")
@@ -44,11 +49,17 @@ def main(argv=sys.argv[1:]):
     add_argument_distribution_repository_key_files(parser)
     add_argument_dockerfile_dir(parser)
     args = parser.parse_args(argv)
+    print("argv",argv)
 
     pkg_names = args.packages
     print("Found the following packages:")
     for pkg_name in sorted(pkg_names):
         print('  -', pkg_name)
+
+    template_pkg_names = args.template_packages
+    print("Priority of template packages:")
+    for template_pkg_name in template_pkg_names:
+        print('  -', template_pkg_name)
 
 
     # generate Dockerfile
@@ -65,10 +76,11 @@ def main(argv=sys.argv[1:]):
         'packages': pkg_names,
         'rosdistro': args.rosdistro_name,
 
+        'template_packages': template_pkg_names,
 
     }
-    create_dockerfile(
-        'docker_images/create_base_image.Dockerfile.em', data, args.dockerfile_dir)
+    template_name = 'docker_images/create_base_image.Dockerfile.em'
+    create_dockerfile(template_name, data, args.dockerfile_dir)
 
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@
 
 @(TEMPLATE(
     'snippet/from_base_image.Dockerfile.em',
+    template_packages=template_packages,
     os_name=os_name,
     os_code_name=os_code_name,
     arch=arch,
