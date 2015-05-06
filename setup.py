@@ -5,7 +5,7 @@ from setuptools import setup
 
 # get version number from module
 version_file = os.path.join(
-    os.path.dirname(__file__), 'src', '_version.py')
+    os.path.dirname(__file__), 'ros_docker_images', '_version.py')
 exec(open(version_file).read())
 
 # Get a list of scripts to install
@@ -29,8 +29,10 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as f:
 setup(
     name='ros_docker_images',
     version=__version__,
+    package_dir={'ros_docker_images': 'ros_docker_images'},
     packages=find_packages(exclude=['test']),
     scripts=scripts,
+    package_data={'ros_docker_images': ['templates/docker_images/*.em']},
     include_package_data=True,
     zip_safe=False,
     install_requires=install_requires,
