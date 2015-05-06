@@ -18,8 +18,10 @@ from ros_buildfarm.templates import create_dockerfile
 
 
 def main(argv=sys.argv[1:]):
+    # Create parser
     parser = argparse.ArgumentParser(
         description="Generate the 'Dockerfile's for the base docker images")
+    # Add arguments to parser
     parser.add_argument(
         '--rosdistro-name',
         required=True,
@@ -45,24 +47,27 @@ def main(argv=sys.argv[1:]):
         '--arch',
         required=True,
         help="The architecture (e.g. 'amd64')")
+
+    # Add argument parsers to parser
     add_argument_distribution_repository_urls(parser)
     add_argument_distribution_repository_key_files(parser)
     add_argument_dockerfile_dir(parser)
     args = parser.parse_args(argv)
-    print("argv",argv)
 
+    # Print parsed meta packages
     pkg_names = args.packages
     print("Found the following packages:")
     for pkg_name in sorted(pkg_names):
         print('  -', pkg_name)
 
+    # Print parsed template packages
     template_pkg_names = args.template_packages
     print("Priority of template packages:")
     for template_pkg_name in template_pkg_names:
         print('  -', template_pkg_name)
 
 
-    # generate Dockerfile
+    # generate data for config
     data = {
         'os_name': args.os_name,
         'os_code_name': args.os_code_name,
@@ -77,9 +82,12 @@ def main(argv=sys.argv[1:]):
         'rosdistro': args.rosdistro_name,
 
         'template_packages': template_pkg_names,
-
     }
+
+    # template_name is specified relative to the templates folder in the template_packages
     template_name = 'docker_images/create_base_image.Dockerfile.em'
+
+    # generate Dockerfile
     create_dockerfile(template_name, data, args.dockerfile_dir)
 
 
