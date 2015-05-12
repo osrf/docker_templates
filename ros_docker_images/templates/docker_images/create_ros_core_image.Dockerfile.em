@@ -1,5 +1,9 @@
-# generated from @template_name
-
+@(TEMPLATE(
+    'snippet/add_generated_comment.Dockerfile.em',
+    tag_name=tag_name,
+    source_template_name=template_name,
+    now_str=now_str,
+))@
 @(TEMPLATE(
     'snippet/from_base_image.Dockerfile.em',
     template_packages=template_packages,
@@ -15,9 +19,10 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV TZ PDT+07
 
-# install wget
-RUN apt-get update && apt-get install -y \
-    wget
+# install packages
+RUN apt-get update && apt-get install -q -y \
+    @(' \\\n    '.join(packages))@
+
 
 # setup keys
 RUN wget http://packages.ros.org/ros.key -O - | apt-key add -
@@ -35,14 +40,14 @@ RUN apt-get update && apt-get install -q -y \
 RUN rosdep init \
     && rosdep update
 
-# install requested metapackage
+# install ros packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@
+    @(' \\\n    '.join(ros_packages))@
 
 
 # setup .bashrc for ROS
-ENV ROS_DISTRO @rosdistro
-RUN echo "source /opt/ros/@rosdistro/setup.bash" >> ~/.bashrc
+ENV ROS_DISTRO @rosdistro_name
+RUN echo "source /opt/ros/@rosdistro_name/setup.bash" >> ~/.bashrc
 
 ENTRYPOINT ["bash", "-c"]
 @{

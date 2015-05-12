@@ -1,5 +1,6 @@
+# This is an auto generated Dockerfile for ros:ros_core
 # generated from templates/docker_images/create_ros_core_image.Dockerfile.em
-
+# generated on 2015-05-12 16:14:04 -0700
 FROM ubuntu:trusty
 MAINTAINER Dirk Thomas dthomas+buildfarm@osrfoundation.org
 
@@ -8,8 +9,8 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV TZ PDT+07
 
-# install wget
-RUN apt-get update && apt-get install -y \
+# install packages
+RUN apt-get update && apt-get install -q -y \
     wget
 
 # setup keys
@@ -28,7 +29,7 @@ RUN apt-get update && apt-get install -q -y \
 RUN rosdep init \
     && rosdep update
 
-# install requested metapackage
+# install ros packages
 RUN apt-get update && apt-get install -q -y \
     ros-indigo-ros-core
 

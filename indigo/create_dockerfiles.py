@@ -1,100 +1,86 @@
 #!/usr/bin/env python3
 
-import sys
+import os
 import pkg_resources
+import sys
+import yaml
+
+from collections import OrderedDict
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+from em import Interpreter
 
 from ros_buildfarm.templates import create_dockerfile
-from ros_buildfarm.docker_common import DockerfileArgParser
+from ros_buildfarm.common import get_debian_package_name
+
+
+def ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
+    """Load yaml data into an OrderedDict"""
+    class OrderedLoader(Loader):
+        pass
+
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return object_pairs_hook(loader.construct_pairs(node))
+    OrderedLoader.add_constructor(
+        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+        construct_mapping)
+    return yaml.load(stream, OrderedLoader)
 
 
 def main(argv=sys.argv[1:]):
+    """Create Dockerfiles for images from platform and image yaml data"""
 
-    args = ['--template_packages', 'ros_docker_images',
-            '--rosdistro-name', 'indigo',
-            '--os-name', 'ubuntu',
-            '--os-code-name', 'trusty',
-            '--arch', 'amd64',
-            '--dockerfile-dir', 'ros_core',
-            '--packages', 'ros-indigo-ros-core']
+    platform_path = 'platform.yaml'
+    images_path = 'images.yaml.em'
+    base_path = os.path.dirname(__file__)
 
-    # Create parser
-    parser = DockerfileArgParser()
-    # generate data for config
-    data = parser.parse(args)
-    data['base_image'] = True
+    # Ream platform perams
+    with open(platform_path, 'r') as f:
+        # use safe_load instead load
+        platform = yaml.safe_load(f)['platform']
 
-    # Print parsed meta packages
-    pkg_names = data['packages']
-    print("Found the following packages:")
-    for pkg_name in sorted(pkg_names):
-        print('  -', pkg_name)
+    # Ream image perams using platform perams
+    images_yaml = StringIO()
+    try:
+        interpreter = Interpreter(output=images_yaml)
+        interpreter.file(open(images_path, 'r'), locals=platform)
+        images_yaml = images_yaml.getvalue()
+    except Exception as e:
+        print("Error processing %s" % images_path)
+        raise
+    finally:
+        interpreter.shutdown()
+        interpreter = None
+    # Use ordered list
+    images = ordered_load(images_yaml, yaml.SafeLoader)['images']
 
-    # Print parsed template packages
-    template_pkg_names = data['template_packages']
-    print("Priority of template packages:")
-    for template_pkg_name in template_pkg_names:
-        print('  -', template_pkg_name)
+    # For each image tag
+    for image in images:
 
-    # template_name is specified relative to the templates folder in the template_packages
-    template_name = 'docker_images/create_ros_core_image.Dockerfile.em'
-    dockerfile_dir = data['dockerfile_dir']
+        # Get data for image
+        data = dict(images[image])
+        data['tag_name'] = image
 
-    # generate Dockerfile
-    create_dockerfile(template_name, data, dockerfile_dir)
+        # Add platform perams
+        data.update(platform)
 
-    # template_name is specified relative to the templates folder in the template_packages
-    template_name = 'docker_images/create_ros_base_image.Dockerfile.em'
-    args = ['--template_packages', 'ros_docker_images',
-            '--rosdistro-name', 'indigo',
-            '--os-name', 'ubuntu',
-            '--os-code-name', 'trusty',
-            '--arch', 'amd64',
-            '--dockerfile-dir', 'ros_base',
-            '--packages', 'ros-indigo-ros-base']
-    data = parser.parse(args)
-    data['base_image'] = False
-    data['base_name'] = 'ros'
-    data['base_tag_name'] = data['rosdistro'] + '-' + 'ros-core'
-    dockerfile_dir = data['dockerfile_dir']
+        # Get debian package names for ros
+        ros_packages = []
+        for ros_package_name in data['ros_packages']:
+            ros_packages.append(
+                get_debian_package_name(
+                    data['rosdistro_name'], ros_package_name))
+        data['ros_packages'] = ros_packages
 
-    # generate Dockerfile
-    create_dockerfile(template_name, data, dockerfile_dir)
+        # Get path to save Docker file
+        dockerfile_dir = os.path.join(base_path, image)
+        data['dockerfile_dir'] = dockerfile_dir
 
-    # template_name is specified relative to the templates folder in the template_packages
-    template_name = 'docker_images/create_ros_base_image.Dockerfile.em'
-    args = ['--template_packages', 'ros_docker_images',
-            '--rosdistro-name', 'indigo',
-            '--os-name', 'ubuntu',
-            '--os-code-name', 'trusty',
-            '--arch', 'amd64',
-            '--dockerfile-dir', 'robot',
-            '--packages', 'ros-indigo-robot']
-    data = parser.parse(args)
-    data['base_image'] = False
-    data['base_name'] = 'ros'
-    data['base_tag_name'] = data['rosdistro'] + '-' + 'ros-base'
-    dockerfile_dir = data['dockerfile_dir']
-
-    # generate Dockerfile
-    create_dockerfile(template_name, data, dockerfile_dir)
-
-    # template_name is specified relative to the templates folder in the template_packages
-    template_name = 'docker_images/create_ros_base_image.Dockerfile.em'
-    args = ['--template_packages', 'ros_docker_images',
-            '--rosdistro-name', 'indigo',
-            '--os-name', 'ubuntu',
-            '--os-code-name', 'trusty',
-            '--arch', 'amd64',
-            '--dockerfile-dir', 'perception',
-            '--packages', 'ros-indigo-perception']
-    data = parser.parse(args)
-    data['base_image'] = False
-    data['base_name'] = 'ros'
-    data['base_tag_name'] = data['rosdistro'] + '-' + 'ros-base'
-    dockerfile_dir = data['dockerfile_dir']
-
-    # generate Dockerfile
-    create_dockerfile(template_name, data, dockerfile_dir)
+        # generate Dockerfile
+        create_dockerfile(data)
 
 if __name__ == '__main__':
     main()
