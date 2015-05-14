@@ -1,6 +1,6 @@
 # This is an auto generated Dockerfile for ros:ros_core
 # generated from templates/docker_images/create_ros_core_image.Dockerfile.em
-# generated on 2015-05-12 16:14:04 -0700
+# generated on 2015-05-14 12:53:14 -0700
 FROM ubuntu:trusty
 MAINTAINER Dirk Thomas dthomas+buildfarm@osrfoundation.org
 
@@ -20,7 +20,7 @@ RUN wget http://packages.ros.org/ros.key -O - | apt-key add -
 RUN echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list
 
 # install bootstrap tools
-RUN apt-get update && apt-get install -q -y \
+RUN apt-get update && apt-get install --no-install-recommends -q -y \
     python-rosdep \
     python-rosinstall \
     python-vcstools
