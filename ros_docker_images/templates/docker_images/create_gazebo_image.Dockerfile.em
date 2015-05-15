@@ -12,14 +12,23 @@
     os_code_name=os_code_name,
     arch=arch,
     base_image=base_image,
-    base_name=base_name,
-    base_tag_name=base_tag_name,
 ))@
-MAINTAINER Dirk Thomas dthomas+buildfarm@@osrfoundation.org
+MAINTAINER Nate Koenig nkoenig@@osrfoundation.org
 
-# install requested metapackage
+# install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@
+
+
+# setup keys
+RUN wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add -
+
+# setup sources.list
+RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-latest.list
+
+# install gazebo packages
+RUN apt-get update && apt-get install -q -y \
+    @(' \\\n    '.join(gazebo_packages))@
 
 
 ENTRYPOINT ["bash", "-c"]
