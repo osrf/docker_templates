@@ -12,15 +12,26 @@
     os_code_name=os_code_name,
     arch=arch,
     base_image=base_image,
-    base_name=base_name,
-    base_tag_name=base_tag_name,
 ))@
 MAINTAINER Dirk Thomas dthomas+buildfarm@@osrfoundation.org
+@[if 'packages' in locals()]@
+@[if packages]@
 
-# install requested metapackage
+# install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@
 
+@[end if]@
+@[end if]@
+@[if 'ros_packages' in locals()]@
+@[if ros_packages]@
+
+# install ros packages
+RUN apt-get update && apt-get install -q -y \
+    @(' \\\n    '.join(ros_packages))@
+
+@[end if]@
+@[end if]@
 
 ENTRYPOINT ["bash", "-c"]
 @{

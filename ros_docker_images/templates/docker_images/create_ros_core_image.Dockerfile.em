@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -q -y \
 
 
 # setup keys
-RUN wget http://packages.ros.org/ros.key -O - | apt-key add -
+RUN wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | apt-key add -
 
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/@os_name @os_code_name main" > /etc/apt/sources.list.d/ros-latest.list
