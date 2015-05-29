@@ -33,9 +33,10 @@ RUN apt-get update && apt-get install -q -y \
 RUN echo "export QT_X11_NO_MITSHM=1" >> ~/.bashrc \
     && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX
 
+# install nvidia drivers
 ADD nvidia-driver.run /tmp/nvidia-driver.run
-RUN sudo sh /tmp/nvidia-driver.run -a -N --ui=none --no-kernel-module \
-	&& sudo rm /tmp/nvidia-driver.run
+RUN sh /tmp/nvidia-driver.run -a -N --ui=none --no-kernel-module \
+	&& rm /tmp/nvidia-driver.run
 
 ENTRYPOINT ["bash", "-c"]
 @{
