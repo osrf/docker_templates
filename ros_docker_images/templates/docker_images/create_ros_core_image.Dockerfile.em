@@ -18,39 +18,44 @@ MAINTAINER Dirk Thomas dthomas+buildfarm@@osrfoundation.org
 # setup environment
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
-ENV TZ PDT+07
+@[if 'packages' in locals()]@
+@[if packages]@
 
 # install packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@
+RUN apt-get update && apt-get install -y \
+    @(' \\\n    '.join(packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
+@[end if]@
+@[end if]@
 
 # setup keys
-RUN wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | apt-key add -
+RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/@os_name @os_code_name main" > /etc/apt/sources.list.d/ros-latest.list
 
 # install bootstrap tools
-RUN apt-get update && apt-get install --no-install-recommends -q -y \
+ENV ROS_DISTRO @rosdistro_name
+RUN apt-get update && apt-get install --no-install-recommends -y \
     python-rosdep \
     python-rosinstall \
-    python-vcstools
+    python-vcstools \
+    && rm -rf /var/lib/apt/lists/*
 
 # bootstrap rosdep
 RUN rosdep init \
     && rosdep update
 
 # install ros packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(ros_packages))@
+RUN apt-get update && apt-get install -y \
+    @(' \\\n    '.join(ros_packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
 
-# setup .bashrc for ROS
-ENV ROS_DISTRO @rosdistro_name
-RUN echo "source /opt/ros/@rosdistro_name/setup.bash" >> ~/.bashrc
-
-ENTRYPOINT ["bash", "-c"]
+# setup entrypoint
+COPY ./ros_entrypoint.sh /
+ENTRYPOINT ["/ros_entrypoint.sh"]
 @{
 cmds = [
 'bash',

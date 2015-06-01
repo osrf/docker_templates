@@ -18,8 +18,9 @@ MAINTAINER Dirk Thomas dthomas+buildfarm@@osrfoundation.org
 @[if packages]@
 
 # install packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@
+RUN apt-get update && apt-get install -y \
+    @(' \\\n    '.join(packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
 @[end if]@
 @[end if]@
@@ -27,16 +28,9 @@ RUN apt-get update && apt-get install -q -y \
 @[if ros_packages]@
 
 # install ros packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(ros_packages))@
+RUN apt-get update && apt-get install -y \
+    @(' \\\n    '.join(ros_packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
 @[end if]@
 @[end if]@
-
-ENTRYPOINT ["bash", "-c"]
-@{
-cmds = [
-'bash',
-]
-}@
-CMD ["@(' && '.join(cmds))"]
