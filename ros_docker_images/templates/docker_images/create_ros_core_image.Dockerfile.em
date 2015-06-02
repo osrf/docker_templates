@@ -54,7 +54,6 @@ RUN apt-get update && apt-get install -y \
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
-RUN chmod +x ./ros_entrypoint.sh
 
 @[if 'entrypoint_name' in locals()]@
 @[if entrypoint_name]@
