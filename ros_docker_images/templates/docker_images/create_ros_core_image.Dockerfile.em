@@ -56,7 +56,16 @@ RUN apt-get update && apt-get install -y \
 COPY ./ros_entrypoint.sh /
 RUN chmod +x ./ros_entrypoint.sh
 
-ENTRYPOINT ["/ros_entrypoint.sh"]
+@[if 'entrypoint_name' in locals()]@
+@[if entrypoint_name]@
+@{
+entrypoint_file = entrypoint_name.split('/')[-1]
+}@
+# install packages
+ENTRYPOINT ["/@entrypoint_file"]
+@[end if]@
+@[end if]@
+
 @{
 cmds = [
 'bash',
