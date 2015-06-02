@@ -61,11 +61,9 @@ RUN chmod +x ./ros_entrypoint.sh
 @{
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
-# install packages
 ENTRYPOINT ["/@entrypoint_file"]
 @[end if]@
 @[end if]@
-
 @{
 cmds = [
 'bash',
