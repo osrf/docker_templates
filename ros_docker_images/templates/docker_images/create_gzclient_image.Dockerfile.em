@@ -19,15 +19,15 @@ MAINTAINER Nate Koenig nkoenig@@osrfoundation.org
 
 # install packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@
+    @(' \\\n    '.join(packages))@ \
+    && rm -rf /var/lib/apt/lists/*
 
 @[end if]@
 @[end if]@
-
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(gazebo_packages))@
-
+    @(' \\\n    '.join(gazebo_packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
 # setup environment
 RUN echo "export QT_X11_NO_MITSHM=1" >> ~/.bashrc \
@@ -37,11 +37,3 @@ RUN echo "export QT_X11_NO_MITSHM=1" >> ~/.bashrc \
 ADD nvidia-driver.run /tmp/nvidia-driver.run
 RUN sh /tmp/nvidia-driver.run -a -N --ui=none --no-kernel-module \
 	&& rm /tmp/nvidia-driver.run
-
-ENTRYPOINT ["bash", "-c"]
-@{
-cmds = [
-'bash',
-]
-}@
-CMD ["@(' && '.join(cmds))"]

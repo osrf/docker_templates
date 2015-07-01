@@ -19,27 +19,37 @@ MAINTAINER Nate Koenig nkoenig@@osrfoundation.org
 
 # install packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@
+    @(' \\\n    '.join(packages))@ \
+    && rm -rf /var/lib/apt/lists/*
 
 @[end if]@
 @[end if]@
 
 # setup keys
-RUN wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add -
+RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 
 # setup sources.list
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-latest.list
 
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(gazebo_packages))@
-
+    @(' \\\n    '.join(gazebo_packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
 # setup environment
-RUN echo "source /usr/share/gazebo/setup.sh" >> ~/.bashrc
-
 EXPOSE 11345
-ENTRYPOINT ["bash", "-c"]
+
+@[if 'entrypoint_name' in locals()]@
+@[if entrypoint_name]@
+@{
+entrypoint_file = entrypoint_name.split('/')[-1]
+}@
+# setup entrypoint
+COPY ./gazebo_entrypoint.sh /
+
+ENTRYPOINT ["/@entrypoint_file"]
+@[end if]@
+@[end if]@
 @{
 cmds = [
 'bash',

@@ -19,15 +19,15 @@ MAINTAINER Nate Koenig nkoenig@@osrfoundation.org
 
 # install packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@
+    @(' \\\n    '.join(packages))@ \
+    && rm -rf /var/lib/apt/lists/*
 
 @[end if]@
 @[end if]@
-
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(gazebo_packages))@
-
+    @(' \\\n    '.join(gazebo_packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
 # clone gzweb
 RUN hg clone https://bitbucket.org/osrf/gzweb ~/gzweb
@@ -37,12 +37,6 @@ RUN cd ~/gzweb \
     && hg up default \
     && ./deploy.sh -m
 
+# setup environment
 EXPOSE 8080
 EXPOSE 7681
-ENTRYPOINT ["bash", "-c"]
-@{
-cmds = [
-'bash',
-]
-}@
-CMD ["@(' && '.join(cmds))"]
