@@ -45,14 +45,14 @@ EXPOSE 11345
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
 # setup entrypoint
-COPY ./gazebo_entrypoint.sh /
+COPY ./@entrypoint_file /
 
 ENTRYPOINT ["/@entrypoint_file"]
 @[end if]@
 @[end if]@
 @{
 cmds = [
-'bash',
+'gzserver',
 ]
 }@
 CMD ["@(' && '.join(cmds))"]
