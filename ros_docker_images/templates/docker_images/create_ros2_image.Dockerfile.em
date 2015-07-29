@@ -15,17 +15,7 @@
 ))@
 MAINTAINER Nate Koenig nkoenig@@osrfoundation.org
 
-RUN apt-get update && apt-get install -y \
-    software-properties-common  \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-add-repository ppa:libccd-debs \
-    && apt-add-repository ppa:fcl-debs \
-    && apt-add-repository ppa:dartsim
-
-@[if 'ros_packages' in locals()]@
-@[if ros_packages]@
-# ROS Setup ####################################################################
+# ROS1 Repo Setup ##############################################################
 # setup environment
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -36,41 +26,14 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/@os_name @os_code_name main" > /etc/apt/sources.list.d/ros-latest.list
 
-# install bootstrap tools
-ENV ROS_DISTRO @rosdistro_name
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    python-rosdep \
-    python-rosinstall \
-    python-vcstools \
-    && rm -rf /var/lib/apt/lists/*
-
-# bootstrap rosdep
-RUN rosdep init \
-    && rosdep update
-
-# install ros packages
-RUN apt-get update && apt-get install -y \
-    @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-@[end if]@
-@[end if]@
-
-@[if 'gazebo_packages' in locals()]@
-@[if gazebo_packages]@
-# Gazebo Setup #################################################################
+# OSRF Repo Setup ##############################################################
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 
 # setup sources.list
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-latest.list
 
-# install gazebo packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-@[end if]@
-@[end if]@
-
+# ROS2 Setup ###################################################################
 @[if 'packages' in locals()]@
 @[if packages]@
 # install packages
@@ -80,37 +43,37 @@ RUN apt-get update && apt-get install -q -y \
 @[end if]@
 @[end if]@
 
-@[if 'pip_install' in locals()]@
-@[if pip_install]@
+@[if 'pip3_install' in locals()]@
+@[if pip3_install]@
 # install python packages
-RUN pip install \
-    @(' \\\n    '.join(pip_install))@
+RUN pip3 install -U \
+    @(' \\\n    '.join(pip3_install))@
+
 @[end if]@
 @[end if]@
 
-@[if 'sources' in locals()]@
-@[if sources]@
+@[if 'vcs' in locals()]@
+@[if vcs]@
 # clone source
 ENV WS @(ws)
-RUN mkdir -p @(ws)/src
+RUN mkdir -p @(ws)
 @(TEMPLATE(
-    'snippet/clone_sources.Dockerfile.em',
-    sources=sources,
+    'snippet/vcs_import.Dockerfile.em',
+    vcs=vcs,
     ws=ws,
 ))@
+@[end if]@
+@[end if]@
 
+@[if 'ament_args' in locals()]@
+@[if ament_args]@
 # build source
-RUN cd @(ws) \
-    && catkin init \
-    && catkin build \
-    -vi \
-    --cmake-args \
-    @(' \\\n    '.join(cmake_args))@
-@[end if]@
-@[end if]@
+WORKDIR @(ws)/..
+RUN src/ament/ament_tools/scripts/ament.py \
+    @(' \\\n    '.join(ament_args))@
 
-# setup environment
-EXPOSE 11345
+@[end if]@
+@[end if]@
 
 @[if 'entrypoint_name' in locals()]@
 @[if entrypoint_name]@
@@ -125,7 +88,7 @@ ENTRYPOINT ["/@entrypoint_file"]
 @[end if]@
 @{
 cmds = [
-'gzserver',
+'bash',
 ]
 }@
 CMD ["@(' && '.join(cmds))"]
