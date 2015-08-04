@@ -85,13 +85,13 @@ RUN apt-get update && apt-get install -q -y \
 # install python packages
 RUN pip install \
     @(' \\\n    '.join(pip_install))@
+
 @[end if]@
 @[end if]@
 
 @[if 'sources' in locals()]@
 @[if sources]@
 # clone source
-ENV WS @(ws)
 RUN mkdir -p @(ws)/src
 @(TEMPLATE(
     'snippet/clone_sources.Dockerfile.em',
@@ -100,12 +100,13 @@ RUN mkdir -p @(ws)/src
 ))@
 
 # build source
-RUN cd @(ws) \
-    && catkin init \
+WORKDIR @(ws)
+RUN catkin init \
     && catkin build \
     -vi \
     --cmake-args \
     @(' \\\n    '.join(cmake_args))@
+
 @[end if]@
 @[end if]@
 
