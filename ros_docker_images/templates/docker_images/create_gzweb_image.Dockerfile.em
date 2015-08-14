@@ -40,3 +40,12 @@ RUN cd ~/gzweb \
 # setup environment
 EXPOSE 8080
 EXPOSE 7681
+
+# run gzserver and gzweb
+@{
+cmds = [
+'./root/gzweb/start_gzweb.sh',
+'gzserver',
+]
+}@
+CMD @(' && '.join(cmds))
