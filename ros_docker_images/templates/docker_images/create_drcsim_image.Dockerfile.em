@@ -13,7 +13,7 @@
     arch=arch,
     base_image=base_image,
 ))@
-MAINTAINER Nate Koenig nkoenig@@osrfoundation.org
+MAINTAINER Steve Peters scpeters@@osrfoundation.org
 
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
