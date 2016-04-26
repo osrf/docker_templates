@@ -12,8 +12,8 @@
     os_code_name=os_code_name,
     arch=arch,
     base_image=base_image,
+    maintainer_name=maintainer_name,
 ))@
-MAINTAINER Dirk Thomas dthomas+buildfarm@@osrfoundation.org
 
 # setup environment
 RUN locale-gen en_US.UTF-8
@@ -36,7 +36,6 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1
 RUN echo "deb http://packages.ros.org/ros/@os_name @os_code_name main" > /etc/apt/sources.list.d/ros-latest.list
 
 # install bootstrap tools
-ENV ROS_DISTRO @rosdistro_name
 RUN apt-get update && apt-get install --no-install-recommends -y \
     python-rosdep \
     python-rosinstall \
@@ -48,6 +47,7 @@ RUN rosdep init \
     && rosdep update
 
 # install ros packages
+ENV ROS_DISTRO @rosdistro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
