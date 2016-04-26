@@ -12,8 +12,8 @@
     os_code_name=os_code_name,
     arch=arch,
     base_image=base_image,
+    maintainer_name=maintainer_name,
 ))@
-MAINTAINER Nate Koenig nkoenig@@osrfoundation.org
 
 RUN apt-get update && apt-get install -y \
     software-properties-common  \

@@ -6,8 +6,8 @@
     os_name=os_name,
     os_code_name=os_code_name,
     arch=arch,
+    maintainer_name=maintainer_name,
 ))@
-MAINTAINER Dirk Thomas dthomas+buildfarm@@osrfoundation.org
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
