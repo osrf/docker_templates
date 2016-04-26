@@ -12,8 +12,8 @@
     os_code_name=os_code_name,
     arch=arch,
     base_image=base_image,
+    maintainer_name=maintainer_name,
 ))@
-MAINTAINER Steve Peters scpeters@@osrfoundation.org
 
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
