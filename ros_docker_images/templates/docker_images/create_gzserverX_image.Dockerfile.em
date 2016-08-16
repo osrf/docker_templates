@@ -17,7 +17,8 @@
 
 RUN apt-get update && apt-get install -y \
     software-properties-common  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 RUN apt-add-repository ppa:libccd-debs \
     && apt-add-repository ppa:fcl-debs \
@@ -42,7 +43,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python-rosdep \
     python-rosinstall \
     python-vcstools \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # bootstrap rosdep
 RUN rosdep init \
@@ -51,7 +53,8 @@ RUN rosdep init \
 # install ros packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 @[end if]@
 @[end if]@
 
@@ -67,7 +70,8 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 @[end if]@
 @[end if]@
 
@@ -76,7 +80,8 @@ RUN apt-get update && apt-get install -q -y \
 # install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 @[end if]@
 @[end if]@
 

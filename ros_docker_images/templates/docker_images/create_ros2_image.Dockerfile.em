@@ -39,7 +39,8 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable @os_code_na
 # install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 @[end if]@
 @[end if]@
 

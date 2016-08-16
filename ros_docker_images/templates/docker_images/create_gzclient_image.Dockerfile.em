@@ -20,11 +20,13 @@
 # install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@ \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 @[end if]@
 @[end if]@
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean

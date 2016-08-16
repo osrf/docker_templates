@@ -20,7 +20,8 @@
 # install packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 @[end if]@
 @[end if]@
@@ -30,7 +31,8 @@ RUN apt-get update && apt-get install -y \
 # install ros packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 @[end if]@
 @[end if]@

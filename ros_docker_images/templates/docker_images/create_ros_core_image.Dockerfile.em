@@ -24,7 +24,8 @@ ENV LANG en_US.UTF-8
 # install packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 @[end if]@
 @[end if]@
@@ -40,7 +41,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python-rosdep \
     python-rosinstall \
     python-vcstools \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # bootstrap rosdep
 RUN rosdep init \
@@ -50,7 +52,8 @@ RUN rosdep init \
 ENV ROS_DISTRO @rosdistro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
