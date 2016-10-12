@@ -20,8 +20,7 @@
 # install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@ \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    && rm -rf /var/lib/apt/lists/*
 
 @[end if]@
 @[end if]@
@@ -35,8 +34,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    && rm -rf /var/lib/apt/lists/*
 
 # setup environment
 EXPOSE 11345
