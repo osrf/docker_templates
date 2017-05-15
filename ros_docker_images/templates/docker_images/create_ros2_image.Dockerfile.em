@@ -17,6 +17,9 @@
 
 # ROS1 Repo Setup ##############################################################
 # setup environment
+RUN apt-get update && apt-get install -q -y \
+    locales \
+     && rm -rf /var/lib/apt/lists/*
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
