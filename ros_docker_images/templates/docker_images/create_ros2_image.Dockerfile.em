@@ -16,10 +16,6 @@
 ))@
 
 # ROS1 Repo Setup ##############################################################
-# setup environment
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
@@ -54,6 +50,11 @@ RUN pip3 install -U \
 
 @[if 'vcs' in locals()]@
 @[if vcs]@
+# setup environment
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
 # clone source
 ENV WS @(ws)
 RUN mkdir -p @(ws)
