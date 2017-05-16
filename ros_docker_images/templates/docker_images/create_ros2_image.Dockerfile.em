@@ -36,8 +36,13 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable @os_code_na
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@  \
     && rm -rf /var/lib/apt/lists/*
+
 @[end if]@
 @[end if]@
+# setup environment
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
 @[if 'pip3_install' in locals()]@
 @[if pip3_install]@
@@ -50,11 +55,6 @@ RUN pip3 install -U \
 
 @[if 'vcs' in locals()]@
 @[if vcs]@
-# setup environment
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
-
 # clone source
 ENV WS @(ws)
 RUN mkdir -p @(ws)
