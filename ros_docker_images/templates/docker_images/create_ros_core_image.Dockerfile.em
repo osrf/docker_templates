@@ -16,7 +16,9 @@
 ))@
 
 # setup environment
-RUN locale-gen en_US.UTF-8
+RUN apt-get update && apt-get install -y \
+    locales \
+    && locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 @[if 'packages' in locals()]@
 @[if packages]@
