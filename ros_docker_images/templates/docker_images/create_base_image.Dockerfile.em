@@ -9,7 +9,10 @@
     maintainer_name=maintainer_name,
 ))@
 
-RUN locale-gen en_US.UTF-8
+# setup environment
+RUN apt-get update && apt-get install -y \
+    locales \
+    && locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV TZ @timezone
 
