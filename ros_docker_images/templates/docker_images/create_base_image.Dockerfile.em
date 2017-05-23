@@ -19,14 +19,12 @@
 
 # install bootstrap tools
 RUN apt-get update && apt-get install -q -y \
-    locales \
     python-rosdep \
     python-rosinstall \
     python-vcstools
 
 # setup environment
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
+ENV LANG C.UTF-8
 ENV TZ @timezone
 
 # bootstrap rosdep

@@ -25,7 +25,6 @@ RUN apt-get update && apt-get install -y \
 
 @[end if]@
 @[end if]@
-
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
@@ -34,15 +33,15 @@ RUN echo "deb http://packages.ros.org/ros/@os_name @os_code_name main" > /etc/ap
 
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    locales \
     python-rosdep \
     python-rosinstall \
     python-vcstools \
     && rm -rf /var/lib/apt/lists/*
 
 # setup environment
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
 # bootstrap rosdep
 RUN rosdep init \
     && rosdep update
