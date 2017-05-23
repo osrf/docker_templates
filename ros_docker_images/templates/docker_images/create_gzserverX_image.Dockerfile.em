@@ -26,12 +26,6 @@ RUN apt-add-repository ppa:libccd-debs \
 @[if 'ros_packages' in locals()]@
 @[if ros_packages]@
 # ROS Setup ####################################################################
-# setup environment
-RUN apt-get update && apt-get install -y \
-    locales \
-    && locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
@@ -45,6 +39,10 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python-rosinstall \
     python-vcstools \
     && rm -rf /var/lib/apt/lists/*
+
+# setup environment
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
 # bootstrap rosdep
 RUN rosdep init \
