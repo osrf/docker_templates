@@ -15,11 +15,6 @@
     maintainer_name=maintainer_name,
 ))@
 
-# setup environment
-RUN apt-get update && apt-get install -y \
-    locales \
-    && locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
 @[if 'packages' in locals()]@
 @[if packages]@
 
@@ -39,11 +34,15 @@ RUN echo "deb http://packages.ros.org/ros/@os_name @os_code_name main" > /etc/ap
 
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
+    locales \
     python-rosdep \
     python-rosinstall \
     python-vcstools \
     && rm -rf /var/lib/apt/lists/*
 
+# setup environment
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
 # bootstrap rosdep
 RUN rosdep init \
     && rosdep update

@@ -9,13 +9,6 @@
     maintainer_name=maintainer_name,
 ))@
 
-# setup environment
-RUN apt-get update && apt-get install -y \
-    locales \
-    && locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV TZ @timezone
-
 @(TEMPLATE(
     'snippet/add_distribution_repositories.Dockerfile.em',
     distribution_repository_keys=distribution_repository_keys,
@@ -26,9 +19,15 @@ ENV TZ @timezone
 
 # install bootstrap tools
 RUN apt-get update && apt-get install -q -y \
+    locales \
     python-rosdep \
     python-rosinstall \
     python-vcstools
+
+# setup environment
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV TZ @timezone
 
 # bootstrap rosdep
 RUN rosdep init
