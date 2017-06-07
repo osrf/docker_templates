@@ -35,7 +35,7 @@ RUN hg clone https://bitbucket.org/osrf/gzweb ~/gzweb
 # build gzweb
 RUN cd ~/gzweb \
     && hg up default \
-    && ./deploy.sh -m
+    && xvfb-run -s "-screen 0 1280x1024x24" ./deploy.sh -m
 
 # setup environment
 EXPOSE 8080
