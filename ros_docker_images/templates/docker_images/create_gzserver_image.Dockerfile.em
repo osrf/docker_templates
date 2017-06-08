@@ -30,7 +30,8 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB
 
 # setup sources.list
 RUN . /etc/os-release \
-    && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable $VERSION_CODENAME main" > /etc/apt/sources.list.d/gazebo-latest.list
+    && . /etc/lsb-release \
+    && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable $DISTRIB_CODENAME main" > /etc/apt/sources.list.d/gazebo-latest.list
 
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
