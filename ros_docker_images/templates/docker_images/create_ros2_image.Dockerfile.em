@@ -15,21 +15,20 @@
     maintainer_name=maintainer_name,
 ))@
 
-# ROS1 Repo Setup ##############################################################
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
-RUN echo "deb http://packages.ros.org/ros/@os_name @os_code_name main" > /etc/apt/sources.list.d/ros-latest.list
+RUN . /etc/os-release \
+    && echo "deb http://packages.ros.org/ros/$ID $VERSION_CODENAME main" > /etc/apt/sources.list.d/ros-latest.list
 
-# OSRF Repo Setup ##############################################################
 # setup keys
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 
 # setup sources.list
-RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable @os_code_name main" > /etc/apt/sources.list.d/gazebo-latest.list
+RUN . /etc/os-release \
+    && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable $VERSION_CODENAME main" > /etc/apt/sources.list.d/gazebo-latest.list
 
-# ROS2 Setup ###################################################################
 @[if 'packages' in locals()]@
 @[if packages]@
 # install packages
@@ -40,11 +39,8 @@ RUN apt-get update && apt-get install -q -y \
 @[end if]@
 @[end if]@
 # setup environment
-RUN apt-get update && apt-get install -y \
-    locales \
-    && locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
 @[if 'pip3_install' in locals()]@
 @[if pip3_install]@
@@ -58,12 +54,13 @@ RUN pip3 install -U \
 @[if 'vcs' in locals()]@
 @[if vcs]@
 # clone source
-ENV WS @(ws)
-RUN mkdir -p @(ws)
+ENV ROS2_WS @(ws)
+RUN mkdir -p $ROS2_WS/src
+WORKDIR $ROS2_WS
 @(TEMPLATE(
     'snippet/vcs_import.Dockerfile.em',
     vcs=vcs,
-    ws=ws,
+    ws='src',
 ))@
 @[end if]@
 @[end if]@
@@ -71,7 +68,7 @@ RUN mkdir -p @(ws)
 @[if 'ament_args' in locals()]@
 @[if ament_args]@
 # build source
-WORKDIR @(ws)/..
+WORKDIR $ROS2_WS
 RUN src/ament/ament_tools/scripts/ament.py \
     @(' \\\n    '.join(ament_args))@
 
