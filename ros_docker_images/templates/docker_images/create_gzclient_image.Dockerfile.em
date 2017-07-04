@@ -3,7 +3,6 @@
     user_name=user_name,
     tag_name=tag_name,
     source_template_name=template_name,
-    now_str=now_str,
 ))@
 @(TEMPLATE(
     'snippet/from_base_image.Dockerfile.em',
