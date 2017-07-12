@@ -61,9 +61,9 @@ WORKDIR $ROS2_WS
     vcs=vcs,
     ws='src',
 ))@
-@[end if]@
-@[end if]@
 
+@[end if]@
+@[end if]@
 @[if 'ament_args' in locals()]@
 @[if ament_args]@
 # build source
@@ -71,8 +71,11 @@ WORKDIR $ROS2_WS
 RUN src/ament/ament_tools/scripts/ament.py \
     @(' \\\n    '.join(ament_args))@
 
+
 @[end if]@
 @[end if]@
+# setup bashrc
+RUN cp /etc/skel/.bashrc ~/
 
 @[if 'entrypoint_name' in locals()]@
 @[if entrypoint_name]@
@@ -81,9 +84,6 @@ entrypoint_file = entrypoint_name.split('/')[-1]
 }@
 # setup entrypoint
 COPY ./@entrypoint_file /
-
-# setup bashrc
-RUN cp /etc/skel/.bashrc ~/
 
 ENTRYPOINT ["/@entrypoint_file"]
 @[end if]@
