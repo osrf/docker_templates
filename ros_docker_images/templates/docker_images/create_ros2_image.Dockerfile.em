@@ -3,7 +3,6 @@
     user_name=user_name,
     tag_name=tag_name,
     source_template_name=template_name,
-    #now_str=now_str,
 ))@
 @(TEMPLATE(
     'snippet/from_base_image.Dockerfile.em',
@@ -16,14 +15,14 @@
 ))@
 
 # setup keys
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
+RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
 RUN . /etc/os-release \
     && echo "deb http://packages.ros.org/ros/$ID $VERSION_CODENAME main" > /etc/apt/sources.list.d/ros-latest.list
 
 # setup keys
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
+RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 
 # setup sources.list
 RUN . /etc/os-release \

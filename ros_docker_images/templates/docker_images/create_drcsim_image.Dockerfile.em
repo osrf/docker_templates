@@ -3,7 +3,6 @@
     user_name=user_name,
     tag_name=tag_name,
     source_template_name=template_name,
-    #now_str=now_str,
 ))@
 @(TEMPLATE(
     'snippet/from_base_image.Dockerfile.em',
@@ -16,7 +15,7 @@
 ))@
 
 # setup keys
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
+RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 
 # setup sources.list
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-latest.list
