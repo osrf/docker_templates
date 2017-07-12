@@ -14,15 +14,6 @@
     maintainer_name=maintainer_name,
 ))@
 
-@[if 'packages' in locals()]@
-@[if packages]@
-# install packages
-RUN apt-get update && apt-get install -y \
-    @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[end if]@
-@[end if]@
 # setup keys
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
@@ -34,6 +25,15 @@ RUN . /etc/os-release \
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
+@[if 'packages' in locals()]@
+@[if packages]@
+# install packages
+RUN apt-get update && apt-get install -q -y \
+    @(' \\\n    '.join(packages))@  \
+    && rm -rf /var/lib/apt/lists/*
+
+@[end if]@
+@[end if]@
 @[if 'pip3_install' in locals()]@
 @[if pip3_install]@
 # install python packages
