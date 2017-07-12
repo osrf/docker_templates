@@ -82,6 +82,9 @@ entrypoint_file = entrypoint_name.split('/')[-1]
 # setup entrypoint
 COPY ./@entrypoint_file /
 
+# setup bashrc
+RUN cp /etc/skel/.bashrc ~/
+
 ENTRYPOINT ["/@entrypoint_file"]
 @[end if]@
 @[end if]@
