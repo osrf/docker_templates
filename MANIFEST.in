@@ -1,2 +1,2 @@
 include README.md
-recursive-include ros_buildfarm/templates *
+recursive-include docker_templates/templates *
