@@ -1,2 +1,2 @@
 include README.md
-recursive-include ros_docker_images/templates *
+recursive-include docker_templates/templates *

@@ -5,7 +5,7 @@ from setuptools import setup
 
 # get version number from module
 version_file = os.path.join(
-    os.path.dirname(__file__), 'ros_docker_images', '_version.py')
+    os.path.dirname(__file__), 'docker_templates', '_version.py')
 exec(open(version_file).read())
 
 # Get a list of scripts to install
@@ -33,14 +33,14 @@ install_requires = [
 ]
 
 kwargs = {
-    'name': 'ros_docker_images',
+    'name': 'docker_templates',
     'version': __version__,
     'packages': find_packages(exclude=['test']),
     'scripts': scripts,
     'include_package_data': True,
     'zip_safe': False,
-    'package_dir': {'ros_docker_images': 'ros_docker_images'},
-    'package_data': {'ros_docker_images': ['templates/docker_images/*.em']},
+    'package_dir': {'docker_templates': 'docker_templates'},
+    'package_data': {'docker_templates': ['templates/docker_images/*.em']},
     'install_requires': install_requires,
     'author': 'Tully Foote',
     'author_email': 'tfoote@osrfoundation.org',
