@@ -25,6 +25,8 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as f:
     long_description = f.read()
 
 install_requires = [
+    'argparse',
+    'collections',
     'empy',
     'PyYAML',
     'ros_buildfarm',
