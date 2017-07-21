@@ -12,10 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import yaml
 
 from argparse import ArgumentParser
 
+def argsToPaths(args):
+
+    # If paths were given explicitly
+    if args.subparser_name == 'explicit':
+        paths = {
+            'platform_path': args.platform,
+            'images_path': args.images,
+            'output_path': args.output,
+        }
+
+    # Else just use the given directory path
+    elif args.subparser_name == 'dir':
+        platform_path = 'platform.yaml'
+        images_path = 'images.yaml.em'
+        paths = {
+            'platform_path': os.path.join(args.directory, platform_path),
+            'images_path': os.path.join(args.directory, images_path),
+            'output_path': args.directory,
+        }
+
+    return paths
 
 class DockerfileArgParser(ArgumentParser):
     """Argument parser class Dockerfile auto generation"""
