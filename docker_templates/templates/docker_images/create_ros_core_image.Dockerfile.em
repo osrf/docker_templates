@@ -13,12 +13,11 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-
 @[if 'packages' in locals()]@
 @[if packages]@
 
 # install packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     @(' \\\n    '.join(packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
