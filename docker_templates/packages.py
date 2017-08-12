@@ -28,7 +28,7 @@ packagePatternTemplateLookup = {
 
 indexUrlTemplateLookup = {
     'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/main/binary-$arch/Packages'),
-    'ros_packages':     string.Template('http://packages.ros.org/$release/$os_name/dists/$os_code_name/main/binary-$arch/Packages'),
+    'ros_packages':     string.Template('http://packages.ros.org/$release/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
     'ros2_packages':    string.Template('http://repo.ros2.org/$os_name/main/dists/$os_code_name/main/binary-$arch/Packages'),
 }
 
