@@ -22,10 +22,9 @@ from ros_buildfarm.templates import get_template_path
 
 default_template_prefix_path = ros_buildfarm.templates.template_prefix_path
 
-def expand_template_prefix_path(data):
+def expand_template_prefix_path(template_packages):
     # reset template_prefix_path
     ros_buildfarm.templates.template_prefix_path = default_template_prefix_path
-    template_packages = data['template_packages']
 
     # expand template_prefix_path in order of preference
     for template_package in reversed(template_packages):
@@ -39,7 +38,7 @@ def create_files(data, verbose=False):
     dockerfile_dir = data['dockerfile_dir']
 
     if 'template_packages' in data:
-        expand_template_prefix_path(data)
+        expand_template_prefix_path(data['template_packages'])
 
     # generate Dockerfile
     create_dockerfile(template_name, data, dockerfile_dir, verbose)

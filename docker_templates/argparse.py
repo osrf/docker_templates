@@ -115,3 +115,23 @@ class DockerfolderArgParser(ArgumentParser):
             args.output = args.directory
 
         return args
+
+
+class DockerlibraryArgParser(ArgumentParser):
+    """Argument parser class Dockerlibrary auto generation"""
+
+    def set(self):
+        """Setup parser for Dockerlibrary auto generation"""
+
+        self.add_argument(
+            '-m', '--manifest',
+            required=True,
+            help="Path to manifest config")
+        self.add_argument(
+            '-o', '--output',
+            required=True,
+            help="Path to write generate Dockerlibrary")
+
+    def parse(self, argv):
+        args = self.parse_args(argv)
+        return args
