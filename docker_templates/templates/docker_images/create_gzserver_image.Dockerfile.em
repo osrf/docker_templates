@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -q -y \
 @[end if]@
 
 # setup keys
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 
 # setup sources.list
 RUN . /etc/os-release \
