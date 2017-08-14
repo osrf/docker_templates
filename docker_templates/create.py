@@ -58,3 +58,4 @@ def create_entrypoint(data):
     # copy script into dockerfile_dir
     entrypoint_dest = os.path.join(dockerfile_dir, entrypoint_file)
     shutil.copyfile(entrypoint_path, entrypoint_dest)
+    os.chmod(entrypoint_dest, 0o744)
