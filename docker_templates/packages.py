@@ -18,7 +18,7 @@ import urllib.request
 
 # TODO: think of a better version pattern like
 #  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
-version_pattern = r'(?<= )\d\.\d\.\d\-\d'
+version_pattern = r'(?<= )\d+\.\d+\.\d+\-\d+'
 
 packagePatternTemplateLookup = {
     'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*\n)'),
