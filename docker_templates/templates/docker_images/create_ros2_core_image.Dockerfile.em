@@ -14,7 +14,14 @@
     maintainer_name=maintainer_name,
 ))@
 
-# setup keys
+# setup ros1 keys
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
+
+# setup sources.list
+RUN . /etc/os-release \
+    && echo "deb http://packages.ros.org/ros/ubuntu $VERSION_CODENAME main" > /etc/apt/sources.list.d/ros-latest.list
+
+# setup ros2 keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
@@ -24,6 +31,8 @@ RUN . /etc/os-release \
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
+ENV ROS_DISTRO @rosdistro_name
+ENV ROS2_DISTRO @ros2distro_name
 
 @[if 'packages' in locals()]@
 @[if packages]@
@@ -46,7 +55,6 @@ RUN pip3 install -U \
 @[if 'ros_packages' in locals()]@
 @[if ros_packages]@
 # install ros packages
-ENV ROS_DISTRO @rosdistro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
@@ -56,7 +64,6 @@ RUN apt-get update && apt-get install -y \
 @[if 'ros2_packages' in locals()]@
 @[if ros2_packages]@
 # install ros2 packages
-ENV ROS2_DISTRO @ros2distro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros2_packages))@  \
     && rm -rf /var/lib/apt/lists/*
