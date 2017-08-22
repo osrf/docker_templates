@@ -18,7 +18,7 @@ import urllib.request
 
 # TODO: think of a better version pattern like
 #  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
-version_pattern = r'(?<= )\d\.\d\.\d\-\d'
+version_pattern = r'(?<= )\d+\.\d+\.\d+\-\d+'
 
 packagePatternTemplateLookup = {
     'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*\n)'),
@@ -32,10 +32,16 @@ indexUrlTemplateLookup = {
     'ros2_packages':    string.Template('http://repo.ros2.org/$os_name/main/dists/$os_code_name/main/binary-$arch/Packages'),
 }
 
-packageNameTemplateLookup = {
+packageNameVersionTemplateLookup = {
     'gazebo_packages':  string.Template('$package=$package_version*'),
     'ros_packages':     string.Template('ros-$rosdistro_name-$package=$package_version*'),
     'ros2_packages':    string.Template('ros-$ros2distro_name-$package=$package_version*'),
+}
+
+packageNameTemplateLookup = {
+    'gazebo_packages':  string.Template('$package'),
+    'ros_packages':     string.Template('ros-$rosdistro_name-$package'),
+    'ros2_packages':    string.Template('ros-$ros2distro_name-$package'),
 }
 
 def getPackageIndex(data, package_index_url):
@@ -71,22 +77,33 @@ def getPackageVersions(data, package_index, packages, package_type):
 
     package_versions = []
 
-    for package in packages:
+    if data['version'] != False:
+        for package in packages:
 
-        # Determine package_pattern
-        package_pattern_template = packagePatternTemplateLookup[package_type]
-        package_pattern = getPackagePattern(data, package_pattern_template, package)
+            # Determine package_pattern
+            package_pattern_template = packagePatternTemplateLookup[package_type]
+            package_pattern = getPackagePattern(data, package_pattern_template, package)
 
-        # Determine package_version
-        package_version = getPackageVersion(data, package_pattern, package, package_index)
+            # Determine package_version
+            package_version = getPackageVersion(data, package_pattern, package, package_index)
 
-        # Determine package_pattern
-        package_name_template = packageNameTemplateLookup[package_type]
-        package_name = package_name_template.substitute(data, package=package, package_version=package_version)
+            # Determine package_pattern
+            package_name_template = packageNameVersionTemplateLookup[package_type]
+            package_name = package_name_template.substitute(data, package=package, package_version=package_version)
 
-        package_versions.append(package_name)
+            package_versions.append(package_name)
 
-    return package_versions
+        return package_versions
+    else:
+        for package in packages:
+
+            # Determine package_pattern
+            package_name_template = packageNameTemplateLookup[package_type]
+            package_name = package_name_template.substitute(data, package=package)
+
+            package_versions.append(package_name)
+
+        return package_versions
 
 def expandPackages(data):
     for package_type in indexUrlTemplateLookup:
