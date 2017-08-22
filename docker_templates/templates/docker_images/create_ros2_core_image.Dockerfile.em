@@ -31,7 +31,11 @@ RUN . /etc/os-release \
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
+@[if 'rosdistro_name' in locals()]@
+@[if rosdistro_name]@
 ENV ROS_DISTRO @rosdistro_name
+@[end if]@
+@[end if]@
 ENV ROS2_DISTRO @ros2distro_name
 
 @[if 'packages' in locals()]@
