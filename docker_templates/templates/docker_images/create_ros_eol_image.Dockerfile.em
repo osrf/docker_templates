@@ -49,9 +49,9 @@ RUN apt-get update && apt-get install -y \
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
 # setup entrypoint
-COPY ./@entrypoint_file /
+COPY ./@entrypoint_file /ros_entrypoint.sh
 
-ENTRYPOINT ["/@entrypoint_file"]
+ENTRYPOINT ["/ros_entrypoint.sh"]
 @[end if]@
 @[end if]@
 @{
