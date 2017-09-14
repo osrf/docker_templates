@@ -50,14 +50,14 @@ RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-# setup entrypoint
-COPY ./ros_entrypoint.sh /
-
 @[if 'entrypoint_name' in locals()]@
 @[if entrypoint_name]@
 @{
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
+# setup entrypoint
+COPY ./@entrypoint_file /
+
 ENTRYPOINT ["/@entrypoint_file"]
 @[end if]@
 @[end if]@
