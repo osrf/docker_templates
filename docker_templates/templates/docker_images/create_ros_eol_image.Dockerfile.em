@@ -23,7 +23,8 @@ RUN sed -i -e 's/archive/old-releases/g' /etc/apt/sources.list
 # install packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir /var/lib/apt/lists/partial
 
 @[end if]@
 @[end if]@
@@ -41,7 +42,8 @@ ENV LC_ALL C.UTF-8
 ENV ROS_DISTRO @rosdistro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir /var/lib/apt/lists/partial
 
 @[if 'entrypoint_name' in locals()]@
 @[if entrypoint_name]@
