@@ -49,3 +49,14 @@ RUN apt-get update && apt-get install -y \
 
 @[end if]@
 @[end if]@
+@[if 'entrypoint_name' in locals()]@
+@[if entrypoint_name]@
+@{
+entrypoint_file = entrypoint_name.split('/')[-1]
+}@
+# setup entrypoint
+COPY ./@entrypoint_file /
+
+ENTRYPOINT ["/@entrypoint_file"]
+@[end if]@
+@[end if]@
