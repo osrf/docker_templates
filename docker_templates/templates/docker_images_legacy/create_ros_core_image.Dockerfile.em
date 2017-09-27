@@ -14,7 +14,7 @@
     maintainer_name=maintainer_name,
 ))@
 
-# setup source.list to eol
+# setup source.list to old-releases
 RUN sed -i -e 's/archive/old-releases/g' /etc/apt/sources.list
 
 @[if 'packages' in locals()]@
