@@ -1,5 +1,3 @@
-# this file is generated via @(script_url)
-
 Maintainers: @(',\n             '.join(maintainers))
 GitRepo: @(repo_url)
 @[  for release_name, release_data in release_names.items()]@
