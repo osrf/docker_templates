@@ -19,6 +19,7 @@ import shutil
 import ros_buildfarm.templates
 from ros_buildfarm.templates import create_dockerfile
 from ros_buildfarm.templates import get_template_path
+from ros_buildfarm.templates import expand_template, get_wrapper_scripts
 
 default_template_prefix_path = ros_buildfarm.templates.template_prefix_path
 
@@ -58,3 +59,13 @@ def create_entrypoint(data):
     entrypoint_dest = os.path.join(dockerfile_dir, entrypoint_file)
     shutil.copyfile(entrypoint_path, entrypoint_dest)
     os.chmod(entrypoint_dest, 0o744)
+
+def create_dockerlibrary(template_name, data, dockerlibrary_path, verbose=False):
+    data['template_name'] = template_name
+    data['wrapper_scripts'] = get_wrapper_scripts()
+    content = expand_template(template_name, data)
+    if verbose:
+        for line in content.splitlines():
+            print(' ', line)
+    with open(dockerlibrary_path, 'w') as h:
+        h.write(content)
