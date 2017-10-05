@@ -44,8 +44,8 @@ kwargs = {
     'author_email': 'tfoote@osrfoundation.org',
     'maintainer': 'Tully Foote',
     'maintainer_email': 'tfoote@osrfoundation.org',
-    'url': 'https://github.com/osrf/docker_images',
-    'keywords': ['ROS', 'docker'],
+    'url': 'https://github.com/osrf/docker_templates',
+    'keywords': ['ROS', 'Gazebo', 'docker'],
     'classifiers': [
         'Programming Language :: Python',
         'License :: OSI Approved :: Apache Software License'],
