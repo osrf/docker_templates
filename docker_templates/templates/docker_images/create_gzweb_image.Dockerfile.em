@@ -29,11 +29,12 @@ RUN apt-get update && apt-get install -q -y \
     && rm -rf /var/lib/apt/lists/*
 
 # clone gzweb
-RUN hg clone https://bitbucket.org/osrf/gzweb ~/gzweb
+ENV GZWEB_WS /root/gzweb
+RUN hg clone https://bitbucket.org/osrf/gzweb $GZWEB_WS
+WORKDIR $GZWEB_WS
 
 # build gzweb
-RUN cd ~/gzweb \
-    && hg up default \
+RUN hg up default \
     && xvfb-run -s "-screen 0 1280x1024x24" ./deploy.sh -m
 
 # setup environment
@@ -43,7 +44,7 @@ EXPOSE 7681
 # run gzserver and gzweb
 @{
 cmds = [
-'./root/gzweb/start_gzweb.sh',
+'npm start',
 'gzserver',
 ]
 }@
