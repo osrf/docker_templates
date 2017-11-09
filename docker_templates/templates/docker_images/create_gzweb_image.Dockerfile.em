@@ -35,7 +35,7 @@ WORKDIR $GZWEB_WS
 
 # build gzweb
 RUN hg up default \
-    && xvfb-run -s "-screen 0 1280x1024x24" ./deploy.sh -m
+    && xvfb-run -s "-screen 0 1280x1024x24" ./deploy.sh -m -t
 
 # setup environment
 EXPOSE 8080
@@ -44,8 +44,8 @@ EXPOSE 7681
 # run gzserver and gzweb
 @{
 cmds = [
+'gzserver --verbose',
 'npm start',
-'gzserver',
 ]
 }@
-CMD @(' && '.join(cmds))
+CMD @(' & '.join(cmds))
