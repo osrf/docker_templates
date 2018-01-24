@@ -79,6 +79,8 @@ def populate_paths(manifest, args, create_dockerfiles):
             for os_name, os_data in release_data['os_names'].items():
                 # For each os distro supported
                 for os_code_name, os_code_data in os_data['os_code_names'].items():
+                    if os_code_data['tag_names'] is None:
+                        continue
                     # For each tag supported:
                     for tag_name, tag_data in os_code_data['tag_names'].items():
                         hooksfolder_dir = os.path.join(
