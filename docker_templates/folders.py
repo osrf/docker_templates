@@ -2,6 +2,13 @@ import os
 import shutil
 import string
 
+docker_to_deb_arch_mapping = {
+    'amd64':'amd64',
+    'arm32v7':'armhf',
+    'arm64v8':'arm64',
+    'i386':'i386',
+}
+
 
 class AltTemplate(string.Template):
     delimiter = '@'
@@ -59,17 +66,30 @@ def populate_paths(manifest, args, create_dockerfiles):
         for os_name, os_data in release_data['os_names'].items():
             # For each os distro supported
             for os_code_name, os_code_data in os_data['os_code_names'].items():
-                dockerfolder_dir = os.path.join(release_name, os_name, os_code_name)
+                # For each arch supported
+                for arch in os_code_data['archs']:
+                    dockerfolder_dir = os.path.join(release_name, os_name, os_code_name, arch)
 
-                os_code_data['release_name'] = release_name
-                os_code_data['os_name'] = os_name
-                os_code_data['os_code_name'] = os_code_name
+                    os_code_data['release_name'] = release_name
+                    os_code_data['os_name'] = os_name
+                    os_code_data['os_code_name'] = os_code_name
+                    os_code_data['repo'] = arch
+                    os_code_data['arch'] = docker_to_deb_arch_mapping[arch]
 
-                populate_path(data=os_code_data, path=dockerfolder_dir)
+                    populate_path(data=os_code_data, path=dockerfolder_dir)
 
-                if args.auto:
-                    # Run the dockerfile generation script
-                    create_dockerfiles.main(('dir', '-d' + dockerfolder_dir))
+                    if args.auto:
+                        # Run the dockerfile generation script
+                        try:
+                            create_dockerfiles.main(('dir', '-d' + dockerfolder_dir))
+                        except AttributeError as err:
+                            expected = AttributeError("'NoneType' object has no attribute 'groups'")
+                            if str(err) == str(expected):
+                                print("Missing packages, '", dockerfolder_dir, "'")
+                            else:
+                                # pass
+                                raise err
+
 
     # Hacks to add hook scripts for osrf repos
     if 'hacks' in manifest:
@@ -86,6 +106,7 @@ def populate_paths(manifest, args, create_dockerfiles):
                         hooksfolder_dir = os.path.join(
                             release_name, os_name,
                             os_code_name,
+                            'amd64',
                             tag_name,
                             'hooks')
                         tag_data['release_name'] = release_name

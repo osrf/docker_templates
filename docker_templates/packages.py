@@ -16,14 +16,12 @@ import string
 import re
 import urllib.request
 
-# TODO: think of a better version pattern like
-#  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
-version_pattern = r'(?<= )\d+\.\d+\.\d+\-\d+'
+version_pattern = re.compile(r'(\bVersion: )([^\n]*)(\n)')
 
 packagePatternTemplateLookup = {
-    'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*\n)'),
-    'ros_packages':     string.Template(r'(\bPackage: ros-$rosdistro_name-$package\n)(.*\n)'),
-    'ros2_packages':    string.Template(r'(\bPackage: ros-$ros2distro_name-$package\n)(.*\n)'),
+    'gazebo_packages':  string.Template(r'((?s)\bPackage: gazebo$gazebo_version\n.*?(?=\n\n))'),
+    'ros_packages':     string.Template(r'((?s)\bPackage: ros-$rosdistro_name-$package\n.*?(?=\n\n))'),
+    'ros2_packages':    string.Template(r'((?s)\bPackage: ros-$ros2distro_name-$package\n.*?(?=\n\n))'),
 }
 
 indexUrlTemplateLookup = {
@@ -33,9 +31,9 @@ indexUrlTemplateLookup = {
 }
 
 packageNameVersionTemplateLookup = {
-    'gazebo_packages':  string.Template('$package=$package_version*'),
-    'ros_packages':     string.Template('ros-$rosdistro_name-$package=$package_version*'),
-    'ros2_packages':    string.Template('ros-$ros2distro_name-$package=$package_version*'),
+    'gazebo_packages':  string.Template('$package=$package_version'),
+    'ros_packages':     string.Template('ros-$rosdistro_name-$package=$package_version'),
+    'ros2_packages':    string.Template('ros-$ros2distro_name-$package=$package_version'),
 }
 
 packageNameTemplateLookup = {
@@ -66,9 +64,9 @@ def getPackageVersion(data, package_pattern, package, package_index):
     """Use package index to get package version"""
 
     # Parse for version_number
-    matchs = re.search(package_pattern, package_index)
-    version_line = matchs.groups(0)[1] # Grab the second line of the first match
-    package_version = re.search(version_pattern, version_line).group(0) # extract version_number
+    matchs = re.search(package_pattern, package_index) # Search for the package entry
+    version_line = re.search(version_pattern, matchs.groups(0)[0]) # Search for the version line
+    package_version = version_line.group(2) # extract version_number
 
     return package_version
 

@@ -15,6 +15,7 @@
 import git
 import os
 import string
+from collections import OrderedDict
 
 
 def latest_commit_sha(repo, path):
@@ -36,8 +37,6 @@ def parse_manifest(manifest, repo, repo_name):
             # For each os code name supported
             for os_code_name, os_code_data in list(os_data['os_code_names'].items()):
                 print('os_code_name: ', os_code_name)
-                commit_path = os.path.join(repo_name, release_name, os_name, os_code_name)
-                commit_sha = latest_commit_sha(repo, commit_path)
                 if os_code_data['tag_names']:
                     at_leat_one_tag = True
                     for tag_name, tag_data in os_code_data['tag_names'].items():
@@ -53,8 +52,15 @@ def parse_manifest(manifest, repo, repo_name):
                         print('tags: ', tags)
                         tag_data['Tags'] = tags
                         tag_data['Architectures'] = os_code_data['archs']
-                        tag_data['GitCommit'] = commit_sha
-                        tag_data['Directory'] = os.path.join(commit_path, tag_name)
+                        tag_data['arch_names'] = OrderedDict()
+                        for arch_name in os_code_data['archs']:
+                            tag_data['arch_names'][arch_name] = OrderedDict()
+                        # print("tag_data['arch_names']: \n", tag_data['arch_names'])
+                        for arch_name, arch_data in tag_data['arch_names'].items():
+                            commit_path = os.path.join(repo_name, release_name, os_name, os_code_name, arch_name, tag_name)
+                            commit_sha = latest_commit_sha(repo, commit_path)
+                            arch_data['GitCommit'] = commit_sha
+                            arch_data['Directory'] = commit_path
         if not at_leat_one_tag:
             del manifest['release_names'][release_name]
 
