@@ -14,8 +14,10 @@ GitRepo: @(repo_url)
 @[                    for tag_name, tag_data in os_code_data['tag_names'].items()]@
 Tags: @(', '.join(tag_data['Tags']))
 Architectures: @(', '.join(tag_data['Architectures']))
-GitCommit: @(tag_data['GitCommit'])
-Directory: @(tag_data['Directory'])
+@[                        for arch_name, arch_data in tag_data['arch_names'].items()]@
+@(arch_name)-GitCommit: @(arch_data['GitCommit'])
+@(arch_name)-Directory: @(arch_data['Directory'])
+@[                        end for]@
 
 @[                    end for]@
 @[                end if]@
