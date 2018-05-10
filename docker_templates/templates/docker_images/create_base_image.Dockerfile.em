@@ -17,6 +17,10 @@
     add_source=True,
 ))@
 
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
 # install bootstrap tools
 RUN apt-get update && apt-get install -q -y \
     python-rosdep \
