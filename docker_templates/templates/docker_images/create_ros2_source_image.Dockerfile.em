@@ -79,12 +79,12 @@ WORKDIR $ROS2_WS
 
 @[  end if]@
 @[end if]@
-@[if 'ament_args' in locals()]@
-@[  if ament_args]@
+@[if 'colcon_args' in locals()]@
+@[  if colcon_args]@
 # build source
 WORKDIR $ROS2_WS
-RUN src/ament/ament_tools/scripts/ament.py \
-    @(' \\\n    '.join(ament_args))@
+RUN colcon \
+    @(' \\\n    '.join(colcon_args))@
 
 
 @[  end if]@
