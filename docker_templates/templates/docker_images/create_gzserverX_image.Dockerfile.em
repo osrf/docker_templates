@@ -14,10 +14,12 @@
     maintainer_name=maintainer_name,
 ))@
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    tzdata \
-    && rm -rf /var/lib/apt/lists/*
-
+@(TEMPLATE(
+    'snippet/setup_tzdata.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+))@
+@
 RUN apt-get update && apt-get install -y \
     software-properties-common  \
     && rm -rf /var/lib/apt/lists/*

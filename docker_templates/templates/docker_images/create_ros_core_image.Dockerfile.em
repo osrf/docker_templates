@@ -13,10 +13,12 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    tzdata \
-    && rm -rf /var/lib/apt/lists/*
+@
+@(TEMPLATE(
+    'snippet/setup_tzdata.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+))@
 @[if 'packages' in locals()]@
 @[if packages]@
 
