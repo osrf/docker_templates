@@ -13,6 +13,11 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
+@(TEMPLATE(
+    'snippet/setup_tzdata.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+))@
 
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743

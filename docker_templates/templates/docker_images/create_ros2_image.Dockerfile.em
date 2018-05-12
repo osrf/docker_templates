@@ -13,6 +13,11 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
+@(TEMPLATE(
+    'snippet/setup_tzdata.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+))@
 
 @[if 'packages' in locals()]@
 @[if packages]@
