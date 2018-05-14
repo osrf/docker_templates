@@ -17,6 +17,12 @@
     add_source=True,
 ))@
 
+@(TEMPLATE(
+    'snippet/setup_tzdata.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+))@
+@
 # install bootstrap tools
 RUN apt-get update && apt-get install -q -y \
     python-rosdep \
