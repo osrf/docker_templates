@@ -29,7 +29,7 @@ RUN apt-add-repository ppa:libccd-debs \
     && apt-add-repository ppa:dartsim
 
 @[if 'ros_packages' in locals()]@
-@[if ros_packages]@
+@[  if ros_packages]@
 # ROS Setup ####################################################################
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
@@ -57,7 +57,7 @@ RUN rosdep init \
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
-@[end if]@
+@[  end if]@
 @[end if]@
 
 @[if 'gazebo_packages' in locals()]@

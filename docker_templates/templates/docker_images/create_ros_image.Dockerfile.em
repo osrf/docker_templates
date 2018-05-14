@@ -14,22 +14,22 @@
     maintainer_name=maintainer_name,
 ))@
 @[if 'packages' in locals()]@
-@[if packages]@
+@[  if packages]@
 
 # install packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-@[end if]@
+@[  end if]@
 @[end if]@
 @[if 'ros_packages' in locals()]@
-@[if ros_packages]@
+@[  if ros_packages]@
 
 # install ros packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-@[end if]@
+@[  end if]@
 @[end if]@

@@ -37,50 +37,50 @@ RUN . /etc/os-release \
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 @[if 'rosdistro_name' in locals()]@
-@[if rosdistro_name]@
+@[  if rosdistro_name]@
 ENV ROS_DISTRO @rosdistro_name
-@[end if]@
+@[  end if]@
 @[end if]@
 ENV ROS2_DISTRO @ros2distro_name
 
 @[if 'packages' in locals()]@
-@[if packages]@
+@[  if packages]@
 # install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-@[end if]@
+@[  end if]@
 @[end if]@
 @[if 'pip3_install' in locals()]@
-@[if pip3_install]@
+@[  if pip3_install]@
 # install python packages
 RUN pip3 install -U \
     @(' \\\n    '.join(pip3_install))@
 
-@[end if]@
+@[  end if]@
 @[end if]@
 
 @[if 'ros_packages' in locals()]@
-@[if ros_packages]@
+@[  if ros_packages]@
 # install ros packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-@[end if]@
+@[  end if]@
 @[end if]@
 @[if 'ros2_packages' in locals()]@
-@[if ros2_packages]@
+@[  if ros2_packages]@
 # install ros2 packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros2_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-@[end if]@
+@[  end if]@
 @[end if]@
 @[if 'entrypoint_name' in locals()]@
-@[if entrypoint_name]@
+@[  if entrypoint_name]@
 @{
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
@@ -88,7 +88,7 @@ entrypoint_file = entrypoint_name.split('/')[-1]
 COPY ./@entrypoint_file /
 
 ENTRYPOINT ["/@entrypoint_file"]
-@[end if]@
+@[  end if]@
 @[end if]@
 @{
 cmds = [
