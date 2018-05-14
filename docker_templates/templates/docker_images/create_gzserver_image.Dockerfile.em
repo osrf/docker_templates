@@ -19,14 +19,14 @@
     os_code_name=os_code_name,
 ))@
 @[if 'packages' in locals()]@
-@[if packages]@
+@[  if packages]@
 
 # install packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(packages))@ \
     && rm -rf /var/lib/apt/lists/*
 
-@[end if]@
+@[  end if]@
 @[end if]@
 
 # setup keys
@@ -46,7 +46,7 @@ RUN apt-get update && apt-get install -q -y \
 EXPOSE 11345
 
 @[if 'entrypoint_name' in locals()]@
-@[if entrypoint_name]@
+@[  if entrypoint_name]@
 @{
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
@@ -54,7 +54,7 @@ entrypoint_file = entrypoint_name.split('/')[-1]
 COPY ./@entrypoint_file /
 
 ENTRYPOINT ["/@entrypoint_file"]
-@[end if]@
+@[  end if]@
 @[end if]@
 @{
 cmds = [

@@ -18,7 +18,7 @@
 RUN sed -i -e 's/archive/old-releases/g' /etc/apt/sources.list
 
 @[if 'packages' in locals()]@
-@[if packages]@
+@[  if packages]@
 
 # install packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /var/lib/apt/lists/partial
 
-@[end if]@
+@[  end if]@
 @[end if]@
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
@@ -46,7 +46,7 @@ RUN apt-get update && apt-get install -y \
     && mkdir /var/lib/apt/lists/partial
 
 @[if 'entrypoint_name' in locals()]@
-@[if entrypoint_name]@
+@[  if entrypoint_name]@
 @{
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
@@ -54,7 +54,7 @@ entrypoint_file = entrypoint_name.split('/')[-1]
 COPY ./@entrypoint_file /ros_entrypoint.sh
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
-@[end if]@
+@[  end if]@
 @[end if]@
 @{
 cmds = [
