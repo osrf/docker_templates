@@ -24,21 +24,12 @@ packages = [
     'gnupg2',
     'lsb-release'
 ]
-if 'upstream_packages' in locals():
-    if isinstance(upstream_packages, list):
-        for pkg in upstream_packages:
-            if pkg not in packages:
-                packages.append(pkg)
 }@
-@
-@[if packages != []]@
-
-# install packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[end if]@
+@(TEMPLATE(
+    'snippet/install_upstream_package_list.Dockerfile.em',
+    packages=packages,
+    upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
+))@
 @
 # setup ros1 keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116

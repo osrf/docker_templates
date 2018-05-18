@@ -13,7 +13,6 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-
 @(TEMPLATE(
     'snippet/setup_tzdata.Dockerfile.em',
     os_name=os_name,
@@ -23,22 +22,14 @@
 packages = [
     'dirmngr',
     'gnupg2',
-    'lsb-release'
+    'lsb-release',
 ]
-if 'upstream_packages' in locals():
-    if isinstance(upstream_packages, list):
-        for pkg in upstream_packages:
-            if pkg not in packages:
-                packages.append(pkg)
 }@
-@[if packages != []]@
-
-# install packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[end if]@
+@(TEMPLATE(
+    'snippet/install_upstream_package_list.Dockerfile.em',
+    packages=packages,
+    upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
+))@
 @
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743

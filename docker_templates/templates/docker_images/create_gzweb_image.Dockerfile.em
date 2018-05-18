@@ -17,21 +17,12 @@
 packages = [
     'mercurial',
 ]
-if 'upstream_packages' in locals():
-    if isinstance(upstream_packages, list):
-        for pkg in upstream_packages:
-            if pkg not in packages:
-                packages.append(pkg)
 }@
-@
-@[if packages != []]@
-
-# install packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[end if]@
+@(TEMPLATE(
+    'snippet/install_upstream_package_list.Dockerfile.em',
+    packages=packages,
+    upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
+))@
 @
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
