@@ -13,16 +13,25 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-@[if 'packages' in locals()]@
-@[  if packages]@
+@{
+packages = []
+if 'upstream_packages' in locals():
+    if isinstance(upstream_packages, list):
+        for pkg in upstream_packages:
+            if pkg not in packages:
+                packages.append(pkg)
+}@
+@
+@[if packages != []]@
 
 # install packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir /var/lib/apt/lists/partial
 
-@[  end if]@
 @[end if]@
+@
 @[if 'ros_packages' in locals()]@
 @[  if ros_packages]@
 

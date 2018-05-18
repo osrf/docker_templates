@@ -13,16 +13,26 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-@[if 'packages' in locals()]@
-@[  if packages]@
+@{
+packages = [
+    'mercurial',
+]
+if 'upstream_packages' in locals():
+    if isinstance(upstream_packages, list):
+        for pkg in upstream_packages:
+            if pkg not in packages:
+                packages.append(pkg)
+}@
+@
+@[if packages != []]@
 
 # install packages
 RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@ \
+    @(' \\\n    '.join(packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-@[  end if]@
 @[end if]@
+@
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(gazebo_packages))@  \
