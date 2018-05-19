@@ -42,11 +42,11 @@ RUN . /etc/os-release \
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-@[if 'packages' in locals()]@
-@[  if packages]@
-# install packages
+@[if 'ros_hosted_packages' in locals()]@
+@[  if ros_hosted_packages]@
+# install packages from the ROS repositories
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(packages))@  \
+    @(' \\\n    '.join(ros_hosted_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
 @[  end if]@
