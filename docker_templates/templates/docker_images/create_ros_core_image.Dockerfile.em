@@ -21,7 +21,7 @@
 ))@
 @
 @{
-packages = [
+template_dependencies = [
     'dirmngr',
     'gnupg2',
     'lsb-release',
@@ -29,7 +29,7 @@ packages = [
 }@
 @(TEMPLATE(
     'snippet/install_upstream_package_list.Dockerfile.em',
-    packages=packages,
+    packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
 @

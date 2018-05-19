@@ -19,7 +19,7 @@
     os_code_name=os_code_name,
 ))@
 @{
-packages = [
+template_dependencies = [
     'dirmngr',
     'gnupg2',
     'lsb-release'
@@ -27,7 +27,7 @@ packages = [
 }@
 @(TEMPLATE(
     'snippet/install_upstream_package_list.Dockerfile.em',
-    packages=packages,
+    packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
 @
@@ -42,11 +42,11 @@ RUN . /etc/os-release \
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-@[if 'ros_hosted_packages' in locals()]@
-@[  if ros_hosted_packages]@
+@[if 'packages' in locals()]@
+@[  if packages]@
 # install packages from the ROS repositories
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros_hosted_packages))@  \
+    @(' \\\n    '.join(packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
 @[  end if]@
