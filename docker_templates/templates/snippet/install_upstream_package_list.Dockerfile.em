@@ -4,8 +4,6 @@ if isinstance(packages, list):
         for pkg in upstream_packages:
             if pkg not in packages:
                 packages.append(pkg)
-        # This doesnt work in empy
-        # packages.extend([pkg for pkg in upstream_packages if pkg not in packages])
 }@
 @[if isinstance(packages, list)]@
 @[  if packages != []]@
