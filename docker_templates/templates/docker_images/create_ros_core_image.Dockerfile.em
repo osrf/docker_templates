@@ -19,21 +19,25 @@
     os_name=os_name,
     os_code_name=os_code_name,
 ))@
-@[if 'packages' in locals()]@
-@[  if packages]@
-
-# install packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[  end if]@
-@[end if]@
+@
+@{
+template_dependencies = [
+    'dirmngr',
+    'gnupg2',
+    'lsb-release',
+]
+}@
+@(TEMPLATE(
+    'snippet/install_upstream_package_list.Dockerfile.em',
+    packages=template_dependencies,
+    upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
+))@
+@
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
-RUN echo "deb http://packages.ros.org/ros/ubuntu @os_code_name main" > /etc/apt/sources.list.d/ros-latest.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
 
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y \

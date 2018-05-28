@@ -13,16 +13,12 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-@[if 'packages' in locals()]@
-@[  if packages]@
-
-# install packages
-RUN apt-get update && apt-get install -y \
-    @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[  end if]@
-@[end if]@
+@(TEMPLATE(
+    'snippet/install_upstream_package_list.Dockerfile.em',
+    packages=[],
+    upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
+))@
+@
 @[if 'ros_packages' in locals()]@
 @[  if ros_packages]@
 

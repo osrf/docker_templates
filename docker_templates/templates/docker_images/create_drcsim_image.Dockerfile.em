@@ -18,24 +18,36 @@
     os_name=os_name,
     os_code_name=os_code_name,
 ))@
-
+@{
+template_dependencies = [
+    'dirmngr',
+    'gnupg2',
+    'lsb-release'
+]
+}@
+@(TEMPLATE(
+    'snippet/install_upstream_package_list.Dockerfile.em',
+    packages=template_dependencies,
+    upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
+))@
+@
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 
 # setup sources.list
-RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-latest.list
+RUN . /etc/os-release \
+    && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable `lsb_release -sc` main" > /etc/apt/sources.list.d/gazebo-latest.list
 
-@[if 'packages' in locals()]@
-@[  if packages]@
+@[if 'gazebo_packages' in locals()]@
+@[  if gazebo_packages]@
 
-# install packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@ \
+# install ros packages
+RUN apt-get update && apt-get install -y \
+    @(' \\\n    '.join(gazebo_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
 @[  end if]@
 @[end if]@
-
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{

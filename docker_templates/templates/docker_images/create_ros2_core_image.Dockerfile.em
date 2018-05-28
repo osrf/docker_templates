@@ -18,20 +18,31 @@
     os_name=os_name,
     os_code_name=os_code_name,
 ))@
-
+@{
+template_dependencies = [
+    'dirmngr',
+    'gnupg2',
+    'lsb-release'
+]
+}@
+@(TEMPLATE(
+    'snippet/install_upstream_package_list.Dockerfile.em',
+    packages=template_dependencies,
+    upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
+))@
+@
 # setup ros1 keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
-RUN . /etc/os-release \
-    && echo "deb http://packages.ros.org/ros/ubuntu $VERSION_CODENAME main" > /etc/apt/sources.list.d/ros-latest.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
 
 # setup ros2 keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
 RUN . /etc/os-release \
-    && echo "deb http://repo.ros2.org/$ID/main $VERSION_CODENAME main" > /etc/apt/sources.list.d/ros2-latest.list
+    && echo "deb http://repo.ros2.org/$ID/main `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
 
 # setup environment
 ENV LANG C.UTF-8
@@ -43,15 +54,6 @@ ENV ROS_DISTRO @rosdistro_name
 @[end if]@
 ENV ROS2_DISTRO @ros2distro_name
 
-@[if 'packages' in locals()]@
-@[  if packages]@
-# install packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[  end if]@
-@[end if]@
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
 # install python packages
