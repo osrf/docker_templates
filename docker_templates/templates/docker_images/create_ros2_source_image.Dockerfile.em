@@ -22,7 +22,8 @@
 template_dependencies = [
     'dirmngr',
     'gnupg2',
-    'lsb-release'
+    'lsb-release',
+    'python3_pip,
 ]
 }@
 @(TEMPLATE(
