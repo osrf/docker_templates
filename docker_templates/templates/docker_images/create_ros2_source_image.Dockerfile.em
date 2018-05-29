@@ -22,8 +22,11 @@
 template_dependencies = [
     'dirmngr',
     'gnupg2',
-    'lsb-release'
+    'lsb-release',
 ]
+if 'pip3_install' in locals():
+    if isinstance(pip3_install, list) and pip3_install != []:
+        template_dependencies.append('python3-pip')
 }@
 @(TEMPLATE(
     'snippet/install_upstream_package_list.Dockerfile.em',

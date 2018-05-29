@@ -13,9 +13,15 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
+@{
+template_dependencies = []
+if 'pip3_install' in locals():
+    if isinstance(pip3_install, list) and pip3_install != []:
+        template_dependencies.append('python3-pip')
+}@
 @(TEMPLATE(
     'snippet/install_upstream_package_list.Dockerfile.em',
-    packages=[],
+    packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
 @

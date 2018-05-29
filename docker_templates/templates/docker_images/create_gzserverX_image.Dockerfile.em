@@ -23,8 +23,8 @@
 template_dependencies = [
     'dirmngr',
     'gnupg2',
-    'lsb-release'
-    'software-properties-common'
+    'lsb-release',
+    'software-properties-common',
 ]
 }@
 @(TEMPLATE(
