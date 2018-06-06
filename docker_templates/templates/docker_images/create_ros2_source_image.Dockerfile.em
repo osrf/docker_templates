@@ -46,11 +46,36 @@ RUN . /etc/os-release \
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
+@{
+# add colcon packages to 'ros2_repo_packages' if colcon is used
+if 'colcon_args' in locals():
+    colcon_packages = [
+        python3-colcon-argcomplete,
+        python3-colcon-bash,
+        python3-colcon-cmake,
+        python3-colcon-core,
+        python3-colcon-defaults,
+        python3-colcon-devtools,
+        python3-colcon-library-path,
+        python3-colcon-metadata,
+        python3-colcon-output,
+        python3-colcon-package-information,
+        python3-colcon-package-selection,
+        python3-colcon-parallel-executor,
+        python3-colcon-powershell,
+        python3-colcon-python-setup-py,
+        python3-colcon-recursive-crawl,
+        python3-colcon-ros,
+        python3-colcon-test-result,
+        python3-colcon-zsh,
+    ]
+    ros2_repo_packages.extend(colcon_packages)
+}@
 @[if 'ros2_repo_packages' in locals()]@
 @[  if ros2_repo_packages]@
 # install packages from the ROS repositories
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros2_repo_packages))@  \
+    @(' \\\n    '.join(sorted(ros2_repo_packages)))@  \
     && rm -rf /var/lib/apt/lists/*
 
 @[  end if]@
