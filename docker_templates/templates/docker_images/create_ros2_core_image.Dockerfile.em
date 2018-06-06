@@ -24,6 +24,7 @@ template_dependencies = [
     'gnupg2',
     'lsb-release',
 ]
+# add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
 if 'pip3_install' in locals():
     if isinstance(pip3_install, list) and pip3_install != []:
         template_dependencies.append('python3-pip')
