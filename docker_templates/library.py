@@ -32,7 +32,6 @@ def parse_manifest(manifest, repo, repo_name):
         at_least_one_tag = False
         for os_name, os_data in list(release_data['os_names'].items()):
             print('os_name: ', os_name)
-            at_least_one_tag = False
             # For each os code name supported
             for os_code_name, os_code_data in list(os_data['os_code_names'].items()):
                 print('os_code_name: ', os_code_name)
