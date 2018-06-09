@@ -24,6 +24,7 @@ template_dependencies = [
     'gnupg2',
     'lsb-release',
 ]
+# add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
 if 'pip3_install' in locals():
     if isinstance(pip3_install, list) and pip3_install != []:
         template_dependencies.append('python3-pip')
@@ -45,11 +46,19 @@ RUN . /etc/os-release \
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
+@{
+# add colcon packages to 'ros2_repo_packages' if colcon is used
+if 'colcon_args' in locals():
+    colcon_packages = [
+        'python3-colcon-common-extensions',
+    ]
+    ros2_repo_packages.extend(colcon_packages)
+}@
 @[if 'ros2_repo_packages' in locals()]@
 @[  if ros2_repo_packages]@
 # install packages from the ROS repositories
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros2_repo_packages))@  \
+    @(' \\\n    '.join(sorted(ros2_repo_packages)))@  \
     && rm -rf /var/lib/apt/lists/*
 
 @[  end if]@
@@ -79,12 +88,12 @@ WORKDIR $ROS2_WS
 
 @[  end if]@
 @[end if]@
-@[if 'ament_args' in locals()]@
-@[  if ament_args]@
+@[if 'colcon_args' in locals()]@
+@[  if colcon_args]@
 # build source
 WORKDIR $ROS2_WS
-RUN src/ament/ament_tools/scripts/ament.py \
-    @(' \\\n    '.join(ament_args))@
+RUN colcon \
+    @(' \\\n    '.join(colcon_args))@
 
 
 @[  end if]@
