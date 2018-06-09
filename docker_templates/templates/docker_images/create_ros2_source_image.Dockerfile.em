@@ -50,24 +50,7 @@ ENV LC_ALL C.UTF-8
 # add colcon packages to 'ros2_repo_packages' if colcon is used
 if 'colcon_args' in locals():
     colcon_packages = [
-        'python3-colcon-argcomplete',
-        'python3-colcon-bash',
-        'python3-colcon-cmake',
-        'python3-colcon-core',
-        'python3-colcon-defaults',
-        'python3-colcon-devtools',
-        'python3-colcon-library-path',
-        'python3-colcon-metadata',
-        'python3-colcon-output',
-        'python3-colcon-package-information',
-        'python3-colcon-package-selection',
-        'python3-colcon-parallel-executor',
-        'python3-colcon-powershell',
-        'python3-colcon-python-setup-py',
-        'python3-colcon-recursive-crawl',
-        'python3-colcon-ros',
-        'python3-colcon-test-result',
-        'python3-colcon-zsh',
+        'python3-colcon-common-extensions',
     ]
     ros2_repo_packages.extend(colcon_packages)
 }@
