@@ -29,17 +29,16 @@ def parse_manifest(manifest, repo, repo_name):
     for release_name, release_data in list(manifest['release_names'].items()):
         print('release_name: ', release_name)
         # For each os supported
-        at_leat_one_tag = False
+        at_least_one_tag = False
         for os_name, os_data in list(release_data['os_names'].items()):
             print('os_name: ', os_name)
-            at_leat_one_tag = False
             # For each os code name supported
             for os_code_name, os_code_data in list(os_data['os_code_names'].items()):
                 print('os_code_name: ', os_code_name)
                 commit_path = os.path.join(repo_name, release_name, os_name, os_code_name)
                 commit_sha = latest_commit_sha(repo, commit_path)
                 if os_code_data['tag_names']:
-                    at_leat_one_tag = True
+                    at_least_one_tag = True
                     for tag_name, tag_data in os_code_data['tag_names'].items():
                         print('tag_name: ', tag_name)
                         tags = []
@@ -55,7 +54,7 @@ def parse_manifest(manifest, repo, repo_name):
                         tag_data['Architectures'] = os_code_data['archs']
                         tag_data['GitCommit'] = commit_sha
                         tag_data['Directory'] = os.path.join(commit_path, tag_name)
-        if not at_leat_one_tag:
+        if not at_least_one_tag:
             del manifest['release_names'][release_name]
 
     return manifest
