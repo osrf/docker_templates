@@ -35,11 +35,6 @@ if 'pip3_install' in locals():
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
 @
-# setup ros1 keys
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
-
-# setup sources.list
-RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
 
 # setup ros2 keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
@@ -51,12 +46,8 @@ RUN . /etc/os-release \
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
-@[if 'rosdistro_name' in locals()]@
-@[  if rosdistro_name]@
-ENV ROS_DISTRO @rosdistro_name
-@[  end if]@
-@[end if]@
-ENV ROS2_DISTRO @ros2distro_name
+
+ENV ROS_DISTRO @ros2distro_name
 
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
@@ -67,15 +58,6 @@ RUN pip3 install -U \
 @[  end if]@
 @[end if]@
 
-@[if 'ros_packages' in locals()]@
-@[  if ros_packages]@
-# install ros packages
-RUN apt-get update && apt-get install -y \
-    @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[  end if]@
-@[end if]@
 @[if 'ros2_packages' in locals()]@
 @[  if ros2_packages]@
 # install ros2 packages
