@@ -41,10 +41,23 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9
 # setup sources.list
 RUN . /etc/os-release \
     && echo "deb http://repo.ros2.org/$ID/main `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
-
+@(TEMPLATE(
+    'snippet/install_downstream_package_list.Dockerfile.em',
+    packages=[],
+    downstream_packages=downstream_packages if 'downstream_packages' in locals() else [],
+))@
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
+
+@[if 'rosdep' in locals()]@
+@[  if 'rosdistro_index_url' in rosdep]@
+# bootstrap rosdep
+ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
+RUN rosdep init \
+    && rosdep update
+@[  end if]@
+@[end if]@
 
 @{
 # add colcon packages to 'ros2_repo_packages' if colcon is used
@@ -88,6 +101,16 @@ WORKDIR $ROS2_WS
 
 @[  end if]@
 @[end if]@
+@
+@[if 'rosdep' in locals()]@
+@[  if 'install' in rosdep]@
+@(TEMPLATE(
+    'snippet/install_rosdep_dependencies.Dockerfile.em',
+    install_args=rosdep['install'],
+))@
+@[  end if]@
+@[end if]@
+
 @[if 'colcon_args' in locals()]@
 @[  if colcon_args]@
 # build source
