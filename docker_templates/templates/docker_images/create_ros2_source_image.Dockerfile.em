@@ -41,11 +41,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9
 # setup sources.list
 RUN . /etc/os-release \
     && echo "deb http://repo.ros2.org/$ID/main `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
-@(TEMPLATE(
-    'snippet/install_downstream_package_list.Dockerfile.em',
-    packages=[],
-    downstream_packages=downstream_packages if 'downstream_packages' in locals() else [],
-))@
+
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
