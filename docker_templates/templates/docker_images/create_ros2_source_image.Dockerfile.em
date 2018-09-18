@@ -46,15 +46,6 @@ RUN . /etc/os-release \
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-@[if 'rosdep' in locals()]@
-@[  if 'rosdistro_index_url' in rosdep]@
-# bootstrap rosdep
-ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
-RUN rosdep init \
-    && rosdep update
-@[  end if]@
-@[end if]@
-
 @{
 # add colcon packages to 'ros2_repo_packages' if colcon is used
 if 'colcon_args' in locals():
@@ -84,6 +75,15 @@ RUN pip3 install -U \
 @
 @[if 'vcs' in locals()]@
 @[  if vcs]@
+
+@[if 'rosdep' in locals()]@
+@[  if 'rosdistro_index_url' in rosdep]@
+# bootstrap rosdep
+ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
+RUN rosdep init \
+    && rosdep update
+@[  end if]@
+@[end if]@
 
 # clone source
 ENV ROS2_WS @(ws)
