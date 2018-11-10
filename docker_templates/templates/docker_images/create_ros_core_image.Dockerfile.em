@@ -38,6 +38,14 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9
 
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
+@[if 'ros_packages_token' in locals()]@
+@[  if ros_packages_token]@
+
+# break build cache for sync
+RUN echo "Release: @(ros_packages_token['date'])@ " \
+    && echo "Digest: @(ros_packages_token['digest'])@ "
+@[  end if]@
+@[end if]@
 
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y \

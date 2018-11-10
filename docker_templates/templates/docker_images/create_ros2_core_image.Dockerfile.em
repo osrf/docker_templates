@@ -42,6 +42,14 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9
 # setup sources.list
 RUN . /etc/os-release \
     && echo "deb http://repo.ros2.org/$ID/main `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
+@[if 'ros2_packages_token' in locals()]@
+@[  if ros2_packages_token]@
+
+# break build cache for sync
+RUN echo "Release: @(ros2_packages_token['date'])@ " \
+    && echo "Digest: @(ros2_packages_token['digest'])@ "
+@[  end if]@
+@[end if]@
 
 # setup environment
 ENV LANG C.UTF-8

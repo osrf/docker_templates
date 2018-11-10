@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import string
+import hashlib
 import re
+import string
 import urllib.request
 
 # TODO: think of a better version pattern like
@@ -42,6 +43,12 @@ packageNameTemplateLookup = {
     'gazebo_packages':  string.Template('$package'),
     'ros_packages':     string.Template('ros-$rosdistro_name-$package'),
     'ros2_packages':    string.Template('ros-$ros2distro_name-$package'),
+}
+
+packageReleaseLookup = {
+    'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/Release'),
+    'ros_packages':     string.Template('http://packages.ros.org/$release/ubuntu/dists/$os_code_name/Release'),
+    'ros2_packages':    string.Template('http://repo.ros2.org/$os_name/main/dists/$os_code_name/Release'),
 }
 
 def getPackageIndex(data, package_index_url):
@@ -105,6 +112,18 @@ def getPackageVersions(data, package_index, packages, package_type):
 
         return package_versions
 
+def getPackageReleaseToken(data, package_release_url):
+    """Get package release token"""
+
+    # Download package index
+    req = urllib.request.Request(package_release_url)
+    with urllib.request.urlopen(req) as response:
+        package_release = response.read().decode('utf-8')
+    token = {}
+    token['date'] = re.search(r'Date: (.*)', package_release).group(1)
+    token['digest'] = hashlib.sha256(package_release.encode('utf-8')).hexdigest()
+    return token
+
 def expandPackages(data):
     for package_type in indexUrlTemplateLookup:
         if package_type in data:
@@ -113,3 +132,6 @@ def expandPackages(data):
             package_index = getPackageIndex(data, package_index_url)
             package_versions = getPackageVersions(data, package_index, data[package_type], package_type)
             data[package_type] = package_versions
+            package_release_url_template = packageReleaseLookup[package_type]
+            package_release_url = package_release_url_template.substitute(data)
+            data[package_type + '_token'] = getPackageReleaseToken(data, package_release_url)
