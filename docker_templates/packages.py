@@ -45,10 +45,10 @@ packageNameTemplateLookup = {
     'ros2_packages':    string.Template('ros-$ros2distro_name-$package'),
 }
 
-packageReleaseLookup = {
-    'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/Release'),
-    'ros_packages':     string.Template('http://packages.ros.org/$release/ubuntu/dists/$os_code_name/Release'),
-    'ros2_packages':    string.Template('http://repo.ros2.org/$os_name/main/dists/$os_code_name/Release'),
+packageInReleaseLookup = {
+    'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/InRelease'),
+    'ros_packages':     string.Template('http://packages.ros.org/$release/ubuntu/dists/$os_code_name/InRelease'),
+    'ros2_packages':    string.Template('http://repo.ros2.org/$os_name/main/dists/$os_code_name/InRelease'),
 }
 
 def getPackageIndex(data, package_index_url):
@@ -132,6 +132,6 @@ def expandPackages(data):
             package_index = getPackageIndex(data, package_index_url)
             package_versions = getPackageVersions(data, package_index, data[package_type], package_type)
             data[package_type] = package_versions
-            package_release_url_template = packageReleaseLookup[package_type]
-            package_release_url = package_release_url_template.substitute(data)
-            data[package_type + '_token'] = getPackageReleaseToken(data, package_release_url)
+            package_inrelease_url_template = packageInReleaseLookup[package_type]
+            package_inrelease_url = package_inrelease_url_template.substitute(data)
+            data[package_type + '_token'] = getPackageReleaseToken(data, package_inrelease_url)

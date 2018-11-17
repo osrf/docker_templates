@@ -41,8 +41,13 @@ RUN . /etc/os-release \
 @[  if gazebo_packages_token]@
 
 # break build cache for sync
-RUN echo "Release: @(gazebo_packages_token['date'])@ " \
-    && echo "Digest: @(gazebo_packages_token['digest'])@ "
+RUN apt-get update \
+    && . /etc/os-release \
+    && echo "Release: @(gazebo_packages_token['date'])@ " \
+    && export SUM=@(gazebo_packages_token['digest'])@  \
+    && export FILE=/var/lib/apt/lists/packages.osrfoundation.org_gazebo_$ID-stable_dists_$(lsb_release -sc)_InRelease \
+    && echo "$SUM *$FILE" | sha256sum --check \
+    && rm -rf /var/lib/apt/lists/*
 @[  end if]@
 @[end if]@
 

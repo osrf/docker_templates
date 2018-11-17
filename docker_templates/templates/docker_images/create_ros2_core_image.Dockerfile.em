@@ -46,8 +46,13 @@ RUN . /etc/os-release \
 @[  if ros2_packages_token]@
 
 # break build cache for sync
-RUN echo "Release: @(ros2_packages_token['date'])@ " \
-    && echo "Digest: @(ros2_packages_token['digest'])@ "
+RUN apt-get update \
+    && . /etc/os-release \
+    && echo "Release: @(ros2_packages_token['date'])@ " \
+    && export SUM=@(ros2_packages_token['digest'])@  \
+    && export FILE=/var/lib/apt/lists/repo.ros2.org_ubuntu_main_dists_$(lsb_release -sc)_InRelease \
+    && echo "$SUM *$FILE" | sha256sum --check \
+    && rm -rf /var/lib/apt/lists/*
 @[  end if]@
 @[end if]@
 

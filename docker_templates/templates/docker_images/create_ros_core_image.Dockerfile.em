@@ -42,8 +42,13 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/
 @[  if ros_packages_token]@
 
 # break build cache for sync
-RUN echo "Release: @(ros_packages_token['date'])@ " \
-    && echo "Digest: @(ros_packages_token['digest'])@ "
+RUN apt-get update \
+    && . /etc/os-release \
+    && echo "Release: @(ros_packages_token['date'])@ " \
+    && export SUM=@(ros_packages_token['digest'])@  \
+    && export FILE=/var/lib/apt/lists/packages.ros.org_ros_ubuntu_dists_$(lsb_release -sc)_InRelease \
+    && echo "$SUM *$FILE" | sha256sum --check \
+    && rm -rf /var/lib/apt/lists/*
 @[  end if]@
 @[end if]@
 
