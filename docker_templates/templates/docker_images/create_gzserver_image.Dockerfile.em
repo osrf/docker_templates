@@ -37,6 +37,19 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD8
 # setup sources.list
 RUN . /etc/os-release \
     && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable `lsb_release -sc` main" > /etc/apt/sources.list.d/gazebo-latest.list
+@[if 'gazebo_packages_token' in locals()]@
+@[  if gazebo_packages_token]@
+
+# break build cache for sync
+RUN apt-get update \
+    && . /etc/os-release \
+    && echo "Release: @(gazebo_packages_token['date'])@ " \
+    && export SUM=@(gazebo_packages_token['digest'])@  \
+    && export FILE=/var/lib/apt/lists/packages.osrfoundation.org_gazebo_$ID-stable_dists_$(lsb_release -sc)_InRelease \
+    && echo "$SUM *$FILE" | sha256sum --check \
+    && rm -rf /var/lib/apt/lists/*
+@[  end if]@
+@[end if]@
 
 # install gazebo packages
 RUN apt-get update && apt-get install -q -y \
