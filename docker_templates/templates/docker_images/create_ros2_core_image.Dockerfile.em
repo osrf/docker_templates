@@ -43,11 +43,21 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9
 RUN . /etc/os-release \
     && echo "deb http://repo.ros2.org/$ID/main `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
 
+# install bootstrap tools
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    python3-rosdep \
+    python3-rosinstall \
+    python3-vcstools \
+    && rm -rf /var/lib/apt/lists/*
+
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-ENV ROS_DISTRO @ros2distro_name
+# bootstrap rosdep
+ENV ROSDISTRO_INDEX_URL https://raw.githubusercontent.com/ros2/rosdistro/ros2/index.yaml
+RUN rosdep init \
+    && rosdep update
 
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
@@ -58,15 +68,12 @@ RUN pip3 install -U \
 @[  end if]@
 @[end if]@
 
-@[if 'ros2_packages' in locals()]@
-@[  if ros2_packages]@
 # install ros2 packages
+ENV ROS_DISTRO @ros2distro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros2_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-@[  end if]@
-@[end if]@
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{
