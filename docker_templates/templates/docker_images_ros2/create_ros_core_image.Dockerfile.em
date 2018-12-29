@@ -35,35 +35,28 @@ if 'pip3_install' in locals():
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
 @
-# setup keys
+# setup ros2 keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
-RUN . /etc/os-release \
-    && echo "deb http://repo.ros2.org/$ID/main `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
+RUN echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
+
+# install bootstrap tools
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    python3-rosdep \
+    python3-rosinstall \
+    python3-vcstools \
+    && rm -rf /var/lib/apt/lists/*
 
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-@{
-# add colcon packages to 'ros2_repo_packages' if colcon is used
-if 'colcon_args' in locals():
-    colcon_packages = [
-        'python3-colcon-common-extensions',
-    ]
-    ros2_repo_packages.extend(colcon_packages)
-}@
-@[if 'ros2_repo_packages' in locals()]@
-@[  if ros2_repo_packages]@
-# install packages from the ROS repositories
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(sorted(ros2_repo_packages)))@  \
-    && rm -rf /var/lib/apt/lists/*
+# bootstrap rosdep
+ENV ROSDISTRO_INDEX_URL https://raw.githubusercontent.com/ros2/rosdistro/ros2/index.yaml
+RUN rosdep init \
+    && rosdep update
 
-@[  end if]@
-@[end if]@
-@
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
 # install python packages
@@ -72,53 +65,12 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-@
-@[if 'vcs' in locals()]@
-@[  if vcs]@
 
-@[if 'rosdep' in locals()]@
-@[  if 'rosdistro_index_url' in rosdep]@
-# bootstrap rosdep
-ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
-RUN rosdep init \
-    && rosdep update
-@[  end if]@
-@[end if]@
-
-# clone source
-ENV ROS2_WS @(ws)
-RUN mkdir -p $ROS2_WS/src
-WORKDIR $ROS2_WS
-@(TEMPLATE(
-    'snippet/vcs_import.Dockerfile.em',
-    vcs=vcs,
-    ws='src',
-))@
-
-@[  end if]@
-@[end if]@
-@
-@[if 'rosdep' in locals()]@
-@[  if 'install' in rosdep]@
-@(TEMPLATE(
-    'snippet/install_rosdep_dependencies.Dockerfile.em',
-    install_args=rosdep['install'],
-))@
-@[  end if]@
-@[end if]@
-
-@[if 'colcon_args' in locals()]@
-@[  if colcon_args]@
-# build source
-WORKDIR $ROS2_WS
-RUN colcon \
-    @(' \\\n    '.join(colcon_args))@
-
-
-@[  end if]@
-@[end if]@
-# setup bashrc
-RUN cp /etc/skel/.bashrc ~/
+# install ros2 packages
+ENV ROS_DISTRO @ros2distro_name
+RUN apt-get update && apt-get install -y \
+    @(' \\\n    '.join(ros2_packages))@  \
+    && rm -rf /var/lib/apt/lists/*
 
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
