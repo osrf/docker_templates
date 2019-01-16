@@ -77,8 +77,8 @@ RUN wget -q $ROS2_BINARY_URL -O - | \
 RUN apt-get update && rosdep install -y \
     --from-paths /opt/ros/$ROS_DISTRO/share \
     --ignore-src \
-    --rosdistro $ROS_DISTRO \
-    --skip-keys "console_bridge fastcdr fastrtps libopensplice69 rti-connext-dds-5.3.1 urdfdom_headers" \
+    --skip-keys " \
+      @(' \\\n      '.join(skip_keys))@ " \
     && rm -rf /var/lib/apt/lists/*
 
 @[if 'entrypoint_name' in locals()]@
