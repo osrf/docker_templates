@@ -76,12 +76,12 @@ RUN pip3 install -U \
 @[  if vcs]@
 
 @[if 'rosdep' in locals()]@
-@[  if 'rosdistro_index_url' in rosdep]@
 # bootstrap rosdep
+@[  if 'rosdistro_index_url' in rosdep]@
 ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
+@[  end if]@
 RUN rosdep init \
     && rosdep update
-@[  end if]@
 @[end if]@
 
 # clone source
