@@ -46,13 +46,11 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
 
-# install bootstrap tools
 ENV ROS_DISTRO @rosdistro_name
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    python-rosdep \
-    python-rosinstall \
-    python-vcstools \
-    && rm -rf /var/lib/apt/lists/*
+@(TEMPLATE(
+    'snippet/install_ros_bootstrap_tools.Dockerfile.em',
+    ros_version='1',
+))@
 
 # setup environment
 ENV LANG C.UTF-8

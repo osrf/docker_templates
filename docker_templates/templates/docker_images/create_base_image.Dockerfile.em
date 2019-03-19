@@ -23,11 +23,10 @@
     os_code_name=os_code_name,
 ))@
 @
-# install bootstrap tools
-RUN apt-get update && apt-get install -q -y \
-    python-rosdep \
-    python-rosinstall \
-    python-vcstools
+@(TEMPLATE(
+    'snippet/install_ros_bootstrap_tools.Dockerfile.em',
+    ros_version='1',
+))@
 
 # setup environment
 ENV LANG C.UTF-8
