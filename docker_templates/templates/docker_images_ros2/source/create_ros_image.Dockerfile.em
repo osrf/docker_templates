@@ -81,13 +81,13 @@ ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
 RUN rosdep init \
     && rosdep update
 @[end if]@
-@[if 'vcs' in locals()]@
-@[  if vcs]@
 
 # clone source
 ENV ROS2_WS @(ws)
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
+@[if 'vcs' in locals()]@
+@[  if vcs]@
 @(TEMPLATE(
     'snippet/vcs_import.Dockerfile.em',
     vcs=vcs,
