@@ -79,8 +79,6 @@ ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
 RUN rosdep init \
     && rosdep update
 @[end if]@
-@[if 'vcs' in locals()]@
-@[  if vcs]@
 
 # clone source
 ENV ROS2_WS @(ws)
