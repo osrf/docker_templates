@@ -107,7 +107,6 @@ WORKDIR $ROS2_WS
 @[if 'colcon_args' in locals()]@
 @[  if colcon_args]@
 # build source
-WORKDIR $ROS2_WS
 RUN colcon \
     @(' \\\n    '.join(colcon_args))@
 
