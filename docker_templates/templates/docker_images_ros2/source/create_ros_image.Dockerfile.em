@@ -47,7 +47,7 @@ ENV LC_ALL C.UTF-8
 
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version='2',
+    ros_version=version,
 ))@
 
 @[if 'ros2_repo_packages' in locals()]@
