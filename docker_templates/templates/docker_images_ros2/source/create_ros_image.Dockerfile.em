@@ -45,14 +45,11 @@ RUN echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -sc` main" > /etc
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-@{
-# add colcon packages to 'ros2_repo_packages' if colcon is used
-if 'colcon_args' in locals():
-    colcon_packages = [
-        'python3-colcon-common-extensions',
-    ]
-    ros2_repo_packages.extend(colcon_packages)
-}@
+@(TEMPLATE(
+    'snippet/install_ros_bootstrap_tools.Dockerfile.em',
+    ros_version=ros_version,
+))@
+
 @[if 'ros2_repo_packages' in locals()]@
 @[  if ros2_repo_packages]@
 # install packages from the ROS repositories
