@@ -23,6 +23,7 @@ template_dependencies = [
     'dirmngr',
     'gnupg2',
     'lsb-release',
+    'wget',
 ]
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
 if 'pip3_install' in locals():
