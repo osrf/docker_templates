@@ -77,6 +77,7 @@ RUN pip3 install -U \
 
 @[if 'rosdep' in locals()]@
 # bootstrap rosdep
+ENV ROS_DISTRO @ros2_distro
 @[  if 'rosdistro_index_url' in rosdep]@
 ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
 @[  end if]@
