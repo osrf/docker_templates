@@ -43,7 +43,7 @@ RUN echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -sc` main" > /etc
 
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version=version,
+    ros_version=ros_version,
 ))@
 
 # setup environment
