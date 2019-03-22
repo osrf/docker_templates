@@ -71,12 +71,31 @@ ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
     tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
 
-# install dependencies
-RUN apt-get update && rosdep install -y \
-    --from-paths /opt/ros/$ROS_DISTRO/share \
-    --ignore-src \
-    --skip-keys " \
-      @(' \\\n      '.join(skip_keys))@ " \
+@[if 'rosdep_override' in locals()]@
+# add custom rosdep rule files
+@[  for rule_file in rosdep_override]@
+COPY @rule_file /etc/ros/rosdep/
+RUN echo "yaml file:///etc/ros/rosdep/@rule_file" | \
+    cat - /etc/ros/rosdep/sources.list.d/20-default.list > temp && \
+    mv temp /etc/ros/rosdep/sources.list.d/20-default.list
+@[  end for]@
+RUN rosdep update
+
+@[end if]@
+@
+@[if 'rosdep' in locals()]@
+@[  if 'install' in rosdep]@
+@(TEMPLATE(
+    'snippet/install_rosdep_dependencies.Dockerfile.em',
+    install_args=rosdep['install'],
+))@
+
+@[  end if]@
+@[end if]@
+@
+# install setup files
+RUN apt-get update && apt install -q -y \
+    ros-$ROS_DISTRO-ros-workspace \
     && rm -rf /var/lib/apt/lists/*
 
 @[if 'entrypoint_name' in locals()]@
