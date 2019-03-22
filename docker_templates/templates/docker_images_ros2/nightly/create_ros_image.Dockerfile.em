@@ -98,6 +98,10 @@ RUN apt-get update && apt install -q -y \
     ros-$ROS_DISTRO-ros-workspace \
     && rm -rf /var/lib/apt/lists/*
 
+# FIXME Remove this once rosdep detects ROS 2 packages https://github.com/ros-infrastructure/rosdep/issues/660
+# ignore installed rosdep keys
+ENV ROS_PACKAGE_PATH /opt/ros/$ROS_DISTRO/share
+
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{
