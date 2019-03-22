@@ -67,7 +67,7 @@ RUN pip3 install -U \
 # install ros2 packages
 ENV ROS_DISTRO @ros2distro_name
 RUN mkdir -p /opt/ros/$ROS_DISTRO
-ENV ROS2_BINARY_URL @ros2_binary_url
+ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
     tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
 
