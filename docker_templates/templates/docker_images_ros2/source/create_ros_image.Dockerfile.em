@@ -72,10 +72,8 @@ RUN pip3 install -U \
 @[  end if]@
 @[end if]@
 @
-@[if 'vcs' in locals()]@
-@[  if vcs]@
-
 @[if 'rosdep' in locals()]@
+
 # bootstrap rosdep
 ENV ROS_DISTRO @ros2_distro
 @[  if 'rosdistro_index_url' in rosdep]@
@@ -89,6 +87,8 @@ RUN rosdep init \
 ENV ROS2_WS @(ws)
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
+@[if 'vcs' in locals()]@
+@[  if vcs]@
 @(TEMPLATE(
     'snippet/vcs_import.Dockerfile.em',
     vcs=vcs,
