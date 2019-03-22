@@ -94,7 +94,7 @@ RUN rosdep update
 @[end if]@
 @
 # install setup files
-RUN apt-get update && apt install -q -y \
+RUN apt-get update && apt-get install -q -y \
     ros-$ROS_DISTRO-ros-workspace \
     && rm -rf /var/lib/apt/lists/*
 
