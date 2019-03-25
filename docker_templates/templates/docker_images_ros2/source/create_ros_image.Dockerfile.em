@@ -94,21 +94,16 @@ RUN if [ ! -z "$RUN_TESTS" ]; then \
             colcon test-result || true; \
         fi \
     fi
-
+@
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
+
 # setup entrypoint
 COPY ./@entrypoint_file /
 
 ENTRYPOINT ["/@entrypoint_file"]
 @[  end if]@
 @[end if]@
-@{
-cmds = [
-'bash',
-]
-}@
-CMD ["@(' && '.join(cmds))"]
