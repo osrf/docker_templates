@@ -68,17 +68,17 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-@
-@[if 'rosdep' in locals()]@
+
+ENV ROS_DISTRO @ros2_distro
 
 # bootstrap rosdep
-ENV ROS_DISTRO @ros2_distro
+@[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@
 ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
 @[  end if]@
+@[end if]@
 RUN rosdep init \
     && rosdep update
-@[end if]@
 
 # clone source
 ENV ROS2_WS @(ws)
@@ -86,6 +86,7 @@ RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
 @[if 'vcs' in locals()]@
 @[  if vcs]@
+
 @(TEMPLATE(
     'snippet/vcs_import.Dockerfile.em',
     vcs=vcs,
@@ -107,7 +108,6 @@ WORKDIR $ROS2_WS
 @[if 'colcon_args' in locals()]@
 @[  if colcon_args]@
 # build source
-WORKDIR $ROS2_WS
 RUN colcon \
     @(' \\\n    '.join(colcon_args))@
 
