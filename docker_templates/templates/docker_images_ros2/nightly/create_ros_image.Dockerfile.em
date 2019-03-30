@@ -71,6 +71,11 @@ ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
     tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
 
+# install setup files
+RUN apt-get update && apt-get install -q -y \
+    ros-$ROS_DISTRO-ros-workspace \
+    && rm -rf /var/lib/apt/lists/*
+
 @[if 'rosdep_override' in locals()]@
 # add custom rosdep rule files
 @[  for rule_file in rosdep_override]@
@@ -84,20 +89,22 @@ RUN rosdep update
 @[end if]@
 @
 @[if 'rosdep' in locals()]@
-@[  if 'install' in rosdep]@
-@(TEMPLATE(
-    'snippet/install_rosdep_dependencies.Dockerfile.em',
-    install_args=rosdep['install'],
-))@
-
-@[  end if]@
-@[end if]@
-@
-# install setup files
-RUN apt-get update && apt-get install -q -y \
-    ros-$ROS_DISTRO-ros-workspace \
+@{
+if 'path' not in rosdep:
+  rosdep['path']='/opt/ros/$ROS_DISTRO/share'
+}@
+# install dependencies
+RUN . /opt/ros/$ROS_DISTRO/setup.sh \
+    && apt-get update \
+    && rosdep install -y \
+    --from-paths @(rosdep['path']) \
+    --ignore-src \
+    --skip-keys " \
+      @(' \\\n      '.join(rosdep['skip_keys']))@ " \
     && rm -rf /var/lib/apt/lists/*
 
+@[end if]@
+@
 # FIXME Remove this once rosdep detects ROS 2 packages https://github.com/ros-infrastructure/rosdep/issues/660
 # ignore installed rosdep keys
 ENV ROS_PACKAGE_PATH /opt/ros/$ROS_DISTRO/share
