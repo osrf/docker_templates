@@ -37,6 +37,8 @@ RUN pip3 install -U \
 @[end if]@
 ARG ROS_DISTRO=@ros2_distro
 ENV ROS_DISTRO=$ROS_DISTRO
+ENV ROS_VERSION=2 \
+    ROS_PYTHON_VERSION=3
 
 @
 @[if 'rosdep' in locals()]@
