@@ -40,7 +40,7 @@ if 'pip3_install' in locals():
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 # setup sources.list
-RUN echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
+RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-testing.list
 
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
@@ -65,16 +65,10 @@ RUN pip3 install -U \
 @[end if]@
 
 # install ros2 packages
-ENV ROS_DISTRO @ros2distro_name
-RUN mkdir -p /opt/ros/$ROS_DISTRO
+RUN mkdir -p /opt/ros/nightly
 ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
-    tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
-
-# install setup files
-RUN apt-get update && apt-get install -q -y \
-    ros-$ROS_DISTRO-ros-workspace \
-    && rm -rf /var/lib/apt/lists/*
+    tar -xj --strip-components=1 -C /opt/ros/nightly
 
 @[if 'rosdep_override' in locals()]@
 # add custom rosdep rule files
@@ -91,10 +85,11 @@ RUN rosdep update
 @[if 'rosdep' in locals()]@
 @{
 if 'path' not in rosdep:
-  rosdep['path']='/opt/ros/$ROS_DISTRO/share'
+  rosdep['path']='/opt/ros/nightly/share'
 }@
+ENV COLCON_CURRENT_PREFIX /opt/ros/nightly
 # install dependencies
-RUN . /opt/ros/$ROS_DISTRO/setup.sh \
+RUN . /opt/ros/nightly/setup.sh \
     && apt-get update \
     && rosdep install -y \
     --from-paths @(rosdep['path']) \
@@ -107,7 +102,7 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh \
 @
 # FIXME Remove this once rosdep detects ROS 2 packages https://github.com/ros-infrastructure/rosdep/issues/660
 # ignore installed rosdep keys
-ENV ROS_PACKAGE_PATH /opt/ros/$ROS_DISTRO/share
+ENV ROS_PACKAGE_PATH /opt/ros/nightly/share
 
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
