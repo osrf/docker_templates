@@ -14,8 +14,12 @@
     maintainer_name=maintainer_name,
 ))@
 
-# setup source.list to old-releases
-RUN sed -i -e 's/archive/old-releases/g' /etc/apt/sources.list
+@(TEMPLATE(
+    'snippet/old_release_set.Dockerfile.em',
+    template_packages=template_packages,
+    os_name=os_name,
+    os_code_name=os_code_name,
+))@
 
 @[if 'packages' in locals()]@
 @[  if packages]@
