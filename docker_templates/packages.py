@@ -21,9 +21,9 @@ import urllib.request
 version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
 
 packagePatternTemplateLookup = {
-    'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*\n)'),
+    'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*?(?:\r*\n{2}))'),
     'ros_packages':     string.Template(r'(\bPackage: ros-$rosdistro_name-$package\n)(.*?(?:\r*\n{2}))'),
-    'ros2_packages':    string.Template(r'(\bPackage: ros-$ros2distro_name-$package\n)(.*\n)'),
+    'ros2_packages':    string.Template(r'(\bPackage: ros-$ros2distro_name-$package\n)(.*?(?:\r*\n{2}))'),
 }
 
 indexUrlTemplateLookup = {
