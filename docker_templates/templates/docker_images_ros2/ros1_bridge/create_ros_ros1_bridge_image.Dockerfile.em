@@ -35,11 +35,13 @@ RUN pip3 install -U \
 @[  end if]@
 @[end if]@
 
-# setup keys
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
-
-# setup sources.list
-RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
+@(TEMPLATE(
+    'snippet/setup_ros_sources.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+    rosdistro_name=rosdistro_name,
+    ros_version='1',
+))@
 
 ENV ROS1_DISTRO @rosdistro_name
 ENV ROS2_DISTRO @ros2distro_name

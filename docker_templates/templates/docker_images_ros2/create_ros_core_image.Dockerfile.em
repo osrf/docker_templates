@@ -22,7 +22,6 @@
 template_dependencies = [
     'dirmngr',
     'gnupg2',
-    'lsb-release',
 ]
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
 if 'pip3_install' in locals():
@@ -35,11 +34,14 @@ if 'pip3_install' in locals():
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
 @
-# setup ros2 keys
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-
-# setup sources.list
-RUN echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
+@(TEMPLATE(
+    'snippet/setup_ros_sources.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+    ros2distro_name=ros2distro_name,
+    rosdistro_name='',
+    ros_version=ros_version,
+))@
 
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
