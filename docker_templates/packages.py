@@ -18,12 +18,12 @@ import urllib.request
 
 # TODO: think of a better version pattern like
 #  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
-version_pattern = r'(?<= )\d+\.\d+\.\d+\-\d+'
+version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
 
 packagePatternTemplateLookup = {
-    'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*\n)'),
-    'ros_packages':     string.Template(r'(\bPackage: ros-$rosdistro_name-$package\n)(.*\n)'),
-    'ros2_packages':    string.Template(r'(\bPackage: ros-$ros2distro_name-$package\n)(.*\n)'),
+    'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*?(?:\r*\n{2}))'),
+    'ros_packages':     string.Template(r'(\bPackage: ros-$rosdistro_name-$package\n)(.*?(?:\r*\n{2}))'),
+    'ros2_packages':    string.Template(r'(\bPackage: ros-$ros2distro_name-$package\n)(.*?(?:\r*\n{2}))'),
 }
 
 indexUrlTemplateLookup = {
@@ -58,7 +58,7 @@ def getPackagePattern(data, package_pattern_template, package):
     """Get package pattern"""
 
     package_pattern_raw = package_pattern_template.substitute(data,package=package)
-    package_pattern = re.compile(package_pattern_raw)
+    package_pattern = re.compile(package_pattern_raw, re.DOTALL)
 
     return package_pattern
 
@@ -67,8 +67,8 @@ def getPackageVersion(data, package_pattern, package, package_index):
 
     # Parse for version_number
     matchs = re.search(package_pattern, package_index)
-    version_line = matchs.groups(0)[1] # Grab the second line of the first match
-    package_version = re.search(version_pattern, version_line).group(0) # extract version_number
+    package_info = matchs.group(0)
+    package_version = re.search(version_pattern, package_info).group(0) # extract version_number
 
     return package_version
 
