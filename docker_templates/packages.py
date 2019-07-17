@@ -30,6 +30,8 @@ indexUrlTemplateLookup = {
     'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/main/binary-$arch/Packages'),
     'ros_packages':     string.Template('http://packages.ros.org/ros/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
     'ros2_packages':    string.Template('http://packages.ros.org/ros2/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
+    'ros_packages_snapshots':    string.Template('http://snapshots.ros.org/$rosdistro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
+    'ros2_packages_snapshots':    string.Template('http://snapshots.ros.org/$ros2distro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
 }
 
 packageNameVersionTemplateLookup = {
