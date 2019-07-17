@@ -16,6 +16,8 @@ import string
 import re
 import urllib.request
 
+from docker_templates.eol_distro import isDistroEOL
+
 # TODO: think of a better version pattern like
 #  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
 version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
@@ -110,7 +112,17 @@ def getPackageVersions(data, package_index, packages, package_type):
 def expandPackages(data):
     for package_type in indexUrlTemplateLookup:
         if package_type in data:
-            package_index_url_template = indexUrlTemplateLookup[package_type]
+            # determine if distro is eol and apply the appropriate index URL template
+            ros_distro_name = ''
+            if package_type == 'ros_packages':
+                ros_distro_name = data['rosdistro_name']
+            elif package_type == 'ros2_packages':
+                ros_distro_name = data['ros2distro_name']
+            eol = isDistroEOL(ros_distro_name, data['os_code_name'])
+            if eol:
+                package_index_url_template = indexUrlTemplateLookup[package_type + '_snapshots']
+            else:
+                package_index_url_template = indexUrlTemplateLookup[package_type]
             package_index_url = package_index_url_template.substitute(data)
             package_index = getPackageIndex(data, package_index_url)
             package_versions = getPackageVersions(data, package_index, data[package_type], package_type)
