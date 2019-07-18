@@ -13,11 +13,20 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
+@
+@(TEMPLATE(
+    'snippet/old_release_set.Dockerfile.em',
+    template_packages=template_packages,
+    os_name=os_name,
+    os_code_name=os_code_name,
+))@
+@
 @(TEMPLATE(
     'snippet/setup_tzdata.Dockerfile.em',
     os_name=os_name,
     os_code_name=os_code_name,
 ))@
+@
 @{
 template_dependencies = [
     'dirmngr',
