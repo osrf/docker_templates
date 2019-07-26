@@ -94,6 +94,7 @@ if 'path' not in rosdep:
   rosdep['path']='/opt/ros/$ROS_DISTRO/share'
 }@
 # install dependencies
+ENV RTI_NC_LICENSE_ACCEPTED=yes
 RUN . /opt/ros/$ROS_DISTRO/setup.sh \
     && apt-get update \
     && rosdep install -y \
