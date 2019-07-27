@@ -1,4 +1,6 @@
 @{
+import os
+
 from docker_templates.eol_distro import isDistroEOL
 if int(ros_version) == 2:
     ros_distro_name = ros2distro_name
@@ -6,7 +8,12 @@ elif int(ros_version) == 1:
     ros_distro_name = rosdistro_name
 
 if isDistroEOL(ros_distro_name, os_code_name):
-    repo_url = 'http://snapshots.ros.org/' + str(ros_distro_name) + '/final/' + 'ubuntu' + '/'
+    repo_url = os.path.join(
+        'http://snapshots.ros.org',
+        str(ros_distro_name),
+        'final',
+        str(os_name)
+    )
     repo_key = 'AD19BAB3CBF125EA'
     source_suffix = 'snapshots'
 else:
