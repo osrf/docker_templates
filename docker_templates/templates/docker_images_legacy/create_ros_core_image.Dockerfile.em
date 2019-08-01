@@ -32,11 +32,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 @[  end if]@
 @[end if]@
-# setup keys
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys AD19BAB3CBF125EA
-
-# setup sources.list
-RUN echo "deb http://snapshots.ros.org/@rosdistro_name/final/@os_name @os_code_name main" > /etc/apt/sources.list.d/ros-snapshots.list
+@
+@(TEMPLATE(
+    'snippet/setup_ros_sources.Dockerfile.em',
+    os_name=os_name,
+    os_code_name=os_code_name,
+    rosdistro_name=rosdistro_name,
+    ros_version=ros_version,
+))@
 
 # setup environment
 RUN locale-gen en_US.UTF-8
