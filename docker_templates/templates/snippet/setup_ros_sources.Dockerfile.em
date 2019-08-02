@@ -14,7 +14,7 @@ if isDistroEOL(ros_distro_name, os_code_name):
         'final',
         str(os_name)
     )
-    repo_key = 'AD19BAB3CBF125EA'
+    repo_key = '4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA'
     source_suffix = 'snapshots'
 else:
     repo_key = 'C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'
