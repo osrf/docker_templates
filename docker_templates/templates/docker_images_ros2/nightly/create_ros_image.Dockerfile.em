@@ -51,10 +51,6 @@ RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu `lsb_release -sc` main
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-# bootstrap rosdep
-RUN rosdep init \
-    && rosdep update
-
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
 # install python packages
@@ -75,6 +71,12 @@ RUN wget -q $ROS2_BINARY_URL -O - | \
 RUN apt-get update && apt-get install -q -y \
     ros-$ROS_DISTRO-ros-workspace \
     && rm -rf /var/lib/apt/lists/*
+
+# bootstrap rosdep
+@[  if 'rosdistro_index_url' in rosdep]@
+ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
+@[  end if]@
+RUN rosdep init
 
 @[if 'rosdep_override' in locals()]@
 # add custom rosdep rule files
