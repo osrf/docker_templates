@@ -101,7 +101,10 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh \
     --ignore-src \
     --skip-keys " \
       @(' \\\n      '.join(rosdep['skip_keys']))@ " \
+    --rosdistro placeholder \
     && rm -rf /var/lib/apt/lists/*
+# using a placeholder distro prevents debian packages from the latest release to be installed
+# https://github.com/osrf/docker_images/issues/304
 
 @[end if]@
 @
