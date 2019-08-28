@@ -3,6 +3,7 @@ if int(ros_version) == 2:
     package_list = [
         'git',
         'python3-colcon-common-extensions',
+        'python3-colcon-mixin',
         'python3-rosdep',
         'python3-vcstool',
     ]

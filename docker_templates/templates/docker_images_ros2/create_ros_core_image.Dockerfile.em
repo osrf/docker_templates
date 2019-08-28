@@ -65,6 +65,14 @@ ENV LC_ALL C.UTF-8
 RUN rosdep init \
     && rosdep update
 
+# setup colcon mixin and metadata
+RUN colcon mixin add upstream \
+      https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
+    colcon mixin update && \
+    colcon metadata add upstream \
+      https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
+    colcon metadata update
+
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
 # install python packages
