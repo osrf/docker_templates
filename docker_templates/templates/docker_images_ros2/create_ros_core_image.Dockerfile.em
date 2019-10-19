@@ -61,9 +61,12 @@ if 'pip3_install' in locals():
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-# bootstrap rosdep
-RUN rosdep init \
-    && rosdep update
+@(TEMPLATE(
+    'snippet/bootstrap_rosdep.Dockerfile.em',
+    os_code_name=os_code_name,
+    ros2distro_name=ros2distro_name,
+    ros_version=ros_version,
+))@
 
 # setup colcon mixin and metadata
 RUN colcon mixin add default \
