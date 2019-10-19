@@ -107,10 +107,6 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh \
 
 @[end if]@
 @
-# FIXME Remove this once rosdep detects ROS 2 packages https://github.com/ros-infrastructure/rosdep/issues/660
-# ignore installed rosdep keys
-ENV ROS_PACKAGE_PATH /opt/ros/$ROS_DISTRO/share
-
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{
