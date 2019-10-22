@@ -118,7 +118,7 @@ def expandPackages(data):
                 ros_distro_name = data['rosdistro_name']
             elif package_type == 'ros2_packages':
                 ros_distro_name = data['ros2distro_name']
-            eol = isDistroEOL(ros_distro_name, data['os_code_name'])
+            eol = isDistroEOL(ros_distro_name=ros_distro_name, os_distro_name=data['os_code_name'])
             if eol:
                 package_index_url_template = indexUrlTemplateLookup[package_type + '_snapshots']
             else:

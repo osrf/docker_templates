@@ -6,7 +6,7 @@ if int(ros_version) == 2:
 elif int(ros_version) == 1:
     ros_distro_name = rosdistro_name
 
-if isDistroEOL(ros_distro_name, os_code_name):
+if isDistroEOL(ros_distro_name=ros_distro_name):
     rosdep_update_args.append('--include-eol-distros')
 }@
 # bootstrap rosdep

@@ -7,7 +7,7 @@ if int(ros_version) == 2:
 elif int(ros_version) == 1:
     ros_distro_name = rosdistro_name
 
-if isDistroEOL(ros_distro_name, os_code_name):
+if isDistroEOL(ros_distro_name=ros_distro_name, os_distro_name=os_code_name):
     repo_url = os.path.join(
         'http://snapshots.ros.org',
         str(ros_distro_name),
