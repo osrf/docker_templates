@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-def isDistroEOL(ros_distro_name, os_distro_name):
+
+def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
     eol_ros_distros = [
         # ROS 1
         'boxturtle',
