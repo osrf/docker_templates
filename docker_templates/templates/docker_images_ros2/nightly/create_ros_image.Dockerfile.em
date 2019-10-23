@@ -69,14 +69,14 @@ RUN wget -q $ROS2_BINARY_URL -O - | \
     tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
 
 # Overwrite setup scripts with ones that point to /opt/ros/$ROS_DISTRO
-RUN mkdir -p /tmp/rosws/build \
- && cd /tmp/rosws \
+RUN mkdir -p /tmp/dir/build \
+ && cd /tmp/dir \
  && git clone --depth 1 https://github.com/ros2/ros_workspace.git -b latest \
- && cd /tmp/rosws/build \
+ && cd /tmp/dir/build \
  && COLCON_CURRENT_PREFIX=/opt/ros/$ROS_DISTRO . /opt/ros/$ROS_DISTRO/local_setup.sh \
  && cmake -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO ../ros_workspace \
  && make install \
- && rm -r /tmp/rosws
+ && rm -r /tmp/dir
 
 # bootstrap rosdep
 @[  if 'rosdistro_index_url' in rosdep]@
