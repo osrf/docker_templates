@@ -20,6 +20,7 @@
 ))@
 @{
 template_dependencies = [
+    'cmake',
     'dirmngr',
     'gnupg2',
     'lsb-release',
@@ -67,10 +68,14 @@ ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
     tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
 
-# install setup files
-RUN apt-get update && apt-get install -q -y \
-    ros-$ROS_DISTRO-ros-workspace \
-    && rm -rf /var/lib/apt/lists/*
+# Overwrite setup scripts with ones that point to /opt/ros/$ROS_DISTRO
+RUN mkdir -p /tmp/rosws \
+ && cd /tmp/rosws \
+ && git clone --depth 1 https://github.com/ros2/ros_workspace.git -b latest \
+ && COLCON_CURRENT_PREFIX=/opt/ros/$ROS_DISTRO . /opt/ros/$ROS_DISTRO/local_setup.sh \
+ && cmake -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO ./ros_workspace \
+ && make install \
+ && rm -r /tmp/rosws
 
 # bootstrap rosdep
 @[  if 'rosdistro_index_url' in rosdep]@
