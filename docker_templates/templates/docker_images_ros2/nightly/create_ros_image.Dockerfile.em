@@ -22,6 +22,7 @@
 template_dependencies = [
     'cmake',
     'dirmngr',
+    'git',
     'gnupg2',
     'lsb-release',
     'wget',
