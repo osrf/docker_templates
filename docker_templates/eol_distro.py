@@ -29,6 +29,7 @@ def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
         # ROS 2
         'ardent',
         'bouncy',
+        'crystal',
     ]
     eol_base_images = [
         # Ubuntu
