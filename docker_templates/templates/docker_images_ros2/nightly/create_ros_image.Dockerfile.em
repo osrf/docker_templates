@@ -67,7 +67,8 @@ ENV ROS_DISTRO @ros2distro_name
 RUN mkdir -p /opt/ros/$ROS_DISTRO
 ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
-    tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
+    tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO \
+    && rm -f /opt/ros/$ROS_DISTRO/COLCON_IGNORE
 
 # Overwrite setup scripts with ones that point to /opt/ros/$ROS_DISTRO
 RUN mkdir -p /tmp/dir/build \
