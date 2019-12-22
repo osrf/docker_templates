@@ -61,7 +61,10 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-
+@(TEMPLATE(
+    'snippet/check_pytest_regression.Dockerfile.em',
+))@
+@
 # bootstrap rosdep
 @[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@

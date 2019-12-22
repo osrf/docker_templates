@@ -64,7 +64,10 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-
+@(TEMPLATE(
+    'snippet/check_pytest_regression.Dockerfile.em',
+))@
+@
 # install ros2 packages
 ENV ROS_DISTRO @ros2distro_name
 RUN mkdir -p /opt/ros/$ROS_DISTRO
