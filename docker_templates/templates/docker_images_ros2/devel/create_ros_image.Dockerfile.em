@@ -71,6 +71,14 @@ ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
 RUN rosdep init \
     && rosdep update
 
+# setup colcon mixin and metadata
+RUN colcon mixin add default \
+      https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
+    colcon mixin update && \
+    colcon metadata add default \
+      https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
+    colcon metadata update
+
 # clone source
 ENV ROS2_WS @(ws)
 RUN mkdir -p $ROS2_WS/src
