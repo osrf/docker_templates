@@ -49,10 +49,13 @@ RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu `lsb_release -sc` main
     ros_version=ros_version,
 ))@
 
+@[if 'env_before' in locals()]@
 # setup environment
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+@[  for env_var, env_val in env_before.items()]@
+ENV @(env_var) @(env_val)
+@[  end for]@
 
+@[end if]@
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
 # install python packages
@@ -61,7 +64,10 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-
+@(TEMPLATE(
+    'snippet/check_pytest_regression.Dockerfile.em',
+))@
+@
 # install ros2 packages
 ENV ROS_DISTRO @ros2distro_name
 RUN mkdir -p /opt/ros/$ROS_DISTRO
@@ -79,25 +85,25 @@ RUN mkdir -p /tmp/dir/build \
  && make install \
  && rm -r /tmp/dir
 
+@(TEMPLATE(
+    'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
+))@
+
+@[if 'rosdep' in locals()]@
 # bootstrap rosdep
-@[  if 'rosdistro_index_url' in rosdep]@
-ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
-@[  end if]@
 RUN rosdep init
 
-@[if 'rosdep_override' in locals()]@
+@[  if 'override_rule_files' in rosdep]@
 # add custom rosdep rule files
-@[  for rule_file in rosdep_override]@
+@[    for rule_file in rosdep['override_rule_files']]@
 COPY @rule_file /etc/ros/rosdep/
 RUN echo "yaml file:///etc/ros/rosdep/@rule_file" | \
     cat - /etc/ros/rosdep/sources.list.d/20-default.list > temp && \
     mv temp /etc/ros/rosdep/sources.list.d/20-default.list
-@[  end for]@
+@[    end for]@
+@[  end if]@
 RUN rosdep update
 
-@[end if]@
-@
-@[if 'rosdep' in locals()]@
 @{
 if 'path' not in rosdep:
   rosdep['path']='/opt/ros/$ROS_DISTRO/share'
@@ -111,6 +117,14 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh \
     --skip-keys " \
       @(' \\\n      '.join(rosdep['skip_keys']))@ " \
     && rm -rf /var/lib/apt/lists/*
+
+@[end if]@
+@
+@[if 'env_after' in locals()]@
+# setup environment
+@[  for env_var, env_val in env_after.items()]@
+ENV @(env_var) @(env_val)
+@[  end for]@
 
 @[end if]@
 @

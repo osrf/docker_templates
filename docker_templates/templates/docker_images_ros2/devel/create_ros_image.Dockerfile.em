@@ -61,7 +61,10 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-
+@(TEMPLATE(
+    'snippet/check_pytest_regression.Dockerfile.em',
+))@
+@
 # bootstrap rosdep
 @[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@
@@ -70,6 +73,10 @@ ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
 @[end if]@
 RUN rosdep init \
     && rosdep update
+
+@(TEMPLATE(
+    'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
+))@
 
 # clone source
 ENV ROS2_WS @(ws)
