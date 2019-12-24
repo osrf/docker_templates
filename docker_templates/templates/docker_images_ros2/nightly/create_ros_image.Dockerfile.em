@@ -49,8 +49,9 @@ RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu `lsb_release -sc` main
     ros_version=ros_version,
 ))@
 
-@[if 'env_before' in locals()]@
 # setup environment
+ENV ROS_DISTRO @ros2distro_name
+@[if 'env_before' in locals()]@
 @[  for env_var, env_val in env_before.items()]@
 ENV @(env_var) @(env_val)
 @[  end for]@
@@ -69,7 +70,6 @@ RUN pip3 install -U \
 ))@
 @
 # install ros2 packages
-ENV ROS_DISTRO @ros2distro_name
 RUN mkdir -p /opt/ros/$ROS_DISTRO
 ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
