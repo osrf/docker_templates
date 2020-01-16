@@ -56,15 +56,12 @@ template_dependencies = [
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-@(TEMPLATE(
-    'snippet/bootstrap_rosdep.Dockerfile.em',
-    os_code_name=os_code_name,
-    rosdistro_name=rosdistro_name,
-    ros_version=ros_version,
-))@
+ENV ROS_DISTRO @rosdistro_name
+# bootstrap rosdep
+RUN rosdep init && \
+  rosdep update --rosdistro $ROS_DISTRO
 
 # install ros packages
-ENV ROS_DISTRO @rosdistro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
