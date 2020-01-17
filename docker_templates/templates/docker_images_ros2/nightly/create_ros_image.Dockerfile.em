@@ -74,6 +74,8 @@ RUN mkdir -p /opt/ros/$ROS_DISTRO
 ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
     tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
+RUN sed -i "s|^\(_colcon_prefix_chain_sh_COLCON_CURRENT_PREFIX\s*=\s*\).*$|\1/opt/ros/$ROS_DISTRO|" \
+      /opt/ros/$ROS_DISTRO/setup.sh
 
 @(TEMPLATE(
     'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
