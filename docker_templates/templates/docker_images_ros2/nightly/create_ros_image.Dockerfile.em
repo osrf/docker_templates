@@ -49,8 +49,9 @@ RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu `lsb_release -sc` main
     ros_version=ros_version,
 ))@
 
-@[if 'env_before' in locals()]@
 # setup environment
+ENV ROS_DISTRO @ros2distro_name
+@[if 'env_before' in locals()]@
 @[  for env_var, env_val in env_before.items()]@
 ENV @(env_var) @(env_val)
 @[  end for]@
@@ -69,21 +70,15 @@ RUN pip3 install -U \
 ))@
 @
 # install ros2 packages
-ENV ROS_DISTRO @ros2distro_name
 RUN mkdir -p /opt/ros/$ROS_DISTRO
 ARG ROS2_BINARY_URL=@ros2_binary_url
 RUN wget -q $ROS2_BINARY_URL -O - | \
     tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
 
-# Overwrite setup scripts with ones that point to /opt/ros/$ROS_DISTRO
-RUN mkdir -p /tmp/dir/build \
- && cd /tmp/dir \
- && git clone --depth 1 https://github.com/ros2/ros_workspace.git -b latest \
- && cd /tmp/dir/build \
- && COLCON_CURRENT_PREFIX=/opt/ros/$ROS_DISTRO . /opt/ros/$ROS_DISTRO/local_setup.sh \
- && cmake -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO ../ros_workspace \
- && make install \
- && rm -r /tmp/dir
+# Overwriting _colcon_prefix_chain_sh_COLCON_CURRENT_PREFIX to point to the new install location
+# Necessary because the default value is an absolute path valid only on the build machine
+RUN sed -i "s|^\(_colcon_prefix_chain_sh_COLCON_CURRENT_PREFIX\s*=\s*\).*$|\1/opt/ros/$ROS_DISTRO|" \
+      /opt/ros/$ROS_DISTRO/setup.sh
 
 @(TEMPLATE(
     'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
