@@ -80,7 +80,7 @@ RUN pip3 install -U \
 @[end if]@
 @
 # install ros2 packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     @(' \\\n    '.join(ros2_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 

@@ -36,7 +36,7 @@ ENV TZ @timezone
 RUN rosdep init
 
 # install requested metapackage
-RUN apt-get update && apt-get install -q -y @(' '.join(packages))@
+RUN apt-get update && apt-get install -q -y --no-install-recommends @(' '.join(packages))@
 
 ENV ROS_DISTRO @(rosdistro)@
 # TODO source rosdistro setup file automatically on entry

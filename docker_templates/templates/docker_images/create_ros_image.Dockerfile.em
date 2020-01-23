@@ -23,7 +23,7 @@
 @[  if ros_packages]@
 
 # install ros packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 

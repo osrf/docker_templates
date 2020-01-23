@@ -23,5 +23,7 @@ releases_with_configured_tzdata = [
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
-    apt-get update && apt-get install -q -y tzdata && rm -rf /var/lib/apt/lists/*
+    apt-get update && \
+    apt-get install -q -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
 @[end if]@
