@@ -61,12 +61,10 @@ if 'pip3_install' in locals():
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-@(TEMPLATE(
-    'snippet/bootstrap_rosdep.Dockerfile.em',
-    os_code_name=os_code_name,
-    ros2distro_name=ros2distro_name,
-    ros_version=ros_version,
-))@
+ENV ROS_DISTRO @ros2distro_name
+# bootstrap rosdep
+RUN rosdep init && \
+  rosdep update --rosdistro $ROS_DISTRO
 
 @(TEMPLATE(
     'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
@@ -82,7 +80,6 @@ RUN pip3 install -U \
 @[end if]@
 
 # install ros2 packages
-ENV ROS_DISTRO @ros2distro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros2_packages))@  \
     && rm -rf /var/lib/apt/lists/*

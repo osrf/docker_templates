@@ -44,7 +44,7 @@ ENV ROS_VERSION=2 \
 @[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@
 ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
-RUN rosdep update
+RUN rosdep update --rosdistro $ROS_DISTRO
 
 @[  end if]@
 @[end if]@
@@ -71,7 +71,7 @@ WORKDIR $ROS2_WS
 
 @[  end if]@
 @[else]@
-RUN rosdep update &&\
+RUN rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -y \
     --from-paths src \
     --ignore-src
