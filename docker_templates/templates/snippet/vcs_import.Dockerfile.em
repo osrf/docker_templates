@@ -1,12 +1,13 @@
 @[if 'vcs' in locals()]@
 @[  if vcs]@
-@[    for i, (imports_name, imports) in enumerate(vcs.items())]@
-@{
-if imports['repos'] is None:
-    imports['repos'] = "https://raw.githubusercontent.com/ros2/ros2/$ROS_DISTRO-release/ros2.repos"
-}@
-RUN wget @(imports['repos']) \
-    && vcs import @(ws) < @(imports['repos'].split('/')[-1])
-@[    end for]@
+@[    if 'imports' in vcs.keys()]@
+@[      if vcs['imports'] is None]@
+@{        vcs['imports'] = {'ros2.repos': 'https://raw.githubusercontent.com/ros2/ros2/$ROS_DISTRO-release/ros2.repos'}}@
+@[      end if]@
+@[      for imports_name, imports_url in vcs['imports'].items()]@
+RUN wget @(imports_url) -O @(imports_name) \
+    && vcs import @(ws) < @(imports_name)
+@[      end for]@
+@[    end if]@
 @[  end if]@
 @[end if]@

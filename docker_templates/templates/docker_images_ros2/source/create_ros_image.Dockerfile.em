@@ -85,6 +85,7 @@ RUN colcon \
 
 @[  end if]@
 @[end if]@
+RUN echo "colcon @(' '.join(colcon_args))" > colcon_build_command.sh
 
 ARG RUN_TESTS
 ARG FAIL_ON_TEST_FAILURE
