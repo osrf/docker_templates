@@ -78,7 +78,7 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-
+@
 # install ros2 packages
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join(ros2_packages))@  \
