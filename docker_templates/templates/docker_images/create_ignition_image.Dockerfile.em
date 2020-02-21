@@ -43,9 +43,6 @@ RUN apt-get update && apt-get install -q -y \
     @(' \\\n    '.join(ignition_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
-# setup environment
-EXPOSE 11345
-
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{
