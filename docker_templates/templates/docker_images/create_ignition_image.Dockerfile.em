@@ -56,10 +56,7 @@ ENTRYPOINT ["/@entrypoint_file"]
 @[end if]@
 @{
 cmds = [
-# launching server only, default: no world
-'ign',
-'gazebo',
-'-s',
+'bash',
 ]
 }@
 CMD ["@('", "'.join(cmds))"]
