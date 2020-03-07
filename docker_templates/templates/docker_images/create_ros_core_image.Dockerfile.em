@@ -13,7 +13,6 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-@
 @(TEMPLATE(
     'snippet/old_release_set.Dockerfile.em',
     template_packages=template_packages,
@@ -47,19 +46,11 @@ template_dependencies = [
     ros_version=ros_version,
 ))@
 
-@(TEMPLATE(
-    'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version=ros_version,
-))@
-
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 ENV ROS_DISTRO @rosdistro_name
-# bootstrap rosdep
-RUN rosdep init && \
-  rosdep update --rosdistro $ROS_DISTRO
 
 # install ros packages
 RUN apt-get update && apt-get install -y --no-install-recommends \

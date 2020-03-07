@@ -13,7 +13,6 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
-@
 @(TEMPLATE(
     'snippet/old_release_set.Dockerfile.em',
     template_packages=template_packages,
@@ -52,23 +51,11 @@ if 'pip3_install' in locals():
     ros_version=ros_version,
 ))@
 
-@(TEMPLATE(
-    'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version=ros_version,
-))@
-
 # setup environment
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 ENV ROS_DISTRO @ros2distro_name
-# bootstrap rosdep
-RUN rosdep init && \
-  rosdep update --rosdistro $ROS_DISTRO
-
-@(TEMPLATE(
-    'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
-))@
 
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@

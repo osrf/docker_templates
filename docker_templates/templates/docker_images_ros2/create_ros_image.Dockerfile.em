@@ -13,6 +13,7 @@
     base_image=base_image,
     maintainer_name=maintainer_name,
 ))@
+
 @{
 template_dependencies = []
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
@@ -25,6 +26,22 @@ if 'pip3_install' in locals():
     packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
+@
+@[if 'bootstrap_ros_tools' in locals()]@
+@(TEMPLATE(
+    'snippet/install_ros_bootstrap_tools.Dockerfile.em',
+    ros_version=ros_version,
+))@
+
+# bootstrap rosdep
+RUN rosdep init && \
+  rosdep update --rosdistro $ROS_DISTRO
+
+@(TEMPLATE(
+    'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
+))@
+
+@[end if]@
 @
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
