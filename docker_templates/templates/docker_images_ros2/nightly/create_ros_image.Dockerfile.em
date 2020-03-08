@@ -24,7 +24,6 @@ template_dependencies = [
     'dirmngr',
     'git',
     'gnupg2',
-    'lsb-release',
     'wget',
 ]
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
@@ -42,7 +41,8 @@ if 'pip3_install' in locals():
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 
 # setup sources.list
-RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-testing.list
+RUN . /etc/os-release \
+  && echo "deb http://packages.ros.org/ros2-testing/ubuntu $VERSION_CODENAME main" > /etc/apt/sources.list.d/ros2-testing.list
 
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
