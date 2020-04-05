@@ -20,6 +20,6 @@
 ))@
 @
 # install gazebo packages
-RUN apt-get update && apt-get install -q -y \
+RUN apt-get update && apt-get install -q -y --no-install-recommends \
     @(' \\\n    '.join(gazebo_packages))@  \
     && rm -rf /var/lib/apt/lists/*

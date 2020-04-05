@@ -9,7 +9,7 @@ if isinstance(packages, list):
 @[  if packages != []]@
 
 # install packages
-RUN apt-get update && apt-get install -q -y \
+RUN apt-get update && apt-get install -q -y --no-install-recommends \
     @(' \\\n    '.join(sorted(packages)))@  \
     && rm -rf /var/lib/apt/lists/*
 

@@ -48,7 +48,7 @@ ENV ROS2_DISTRO @ros2distro_name
 @[if 'ros_packages' in locals()]@
 @[  if ros_packages]@
 # install ros packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     @(' \\\n    '.join(ros_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
@@ -57,7 +57,7 @@ RUN apt-get update && apt-get install -y \
 @[if 'ros2_packages' in locals()]@
 @[  if ros2_packages]@
 # install ros2 packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     @(' \\\n    '.join(ros2_packages))@  \
     && rm -rf /var/lib/apt/lists/*
 
