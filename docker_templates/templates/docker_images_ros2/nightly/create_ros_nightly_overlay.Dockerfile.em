@@ -44,7 +44,7 @@ RUN pip3 install -U \
 @
 @[if 'rosdep' in locals()]@
 # bootstrap rosdep
-RUN rosdep update --rosdistro $ROS_DISTRO
+RUN rosdep update
 
 @{
 if 'path' not in rosdep:
