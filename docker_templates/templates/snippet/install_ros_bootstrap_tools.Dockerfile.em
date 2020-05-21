@@ -1,7 +1,11 @@
 @{
 if int(ros_version) == 2:
     package_list = [
-        'build-essential',
+        'cmake',
+        'gcc',
+        'g++',
+        'libc6-dev',
+        'make',
         'git',
         'python3-colcon-common-extensions',
         'python3-colcon-mixin',
@@ -10,7 +14,11 @@ if int(ros_version) == 2:
     ]
 else:
     package_list = [
-        'build-essential',
+        'cmake',
+        'gcc',
+        'g++',
+        'libc6-dev',
+        'make',
         'python-rosdep',
         'python-rosinstall',
         'python-vcstools',
