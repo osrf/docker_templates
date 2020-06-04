@@ -70,13 +70,3 @@ entrypoint_file = entrypoint_name.split('/')[-1]
 }@
 # setup entrypoint
 COPY ./@entrypoint_file /
-
-ENTRYPOINT ["/@entrypoint_file"]
-@{
-cmds = [
-'bash',
-]
-}@
-CMD ["@(' && '.join(cmds))"]
-@[  end if]@
-@[end if]@
