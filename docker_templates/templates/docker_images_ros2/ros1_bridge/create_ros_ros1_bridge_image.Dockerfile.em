@@ -69,6 +69,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 entrypoint_file = entrypoint_name.split('/')[-1]
 }@
 # setup entrypoint
-COPY ./@entrypoint_file /	
+COPY ./@entrypoint_file /
 @[  end if]@	
 @[end if]@
