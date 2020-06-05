@@ -63,6 +63,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 @[  end if]@
 @[end if]@
+@[if 'downstream_packages' in locals()]@
+@[  if downstream_packages]@
+# install downstream packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    @(' \\\n    '.join(downstream_packages))@  \
+    && rm -rf /var/lib/apt/lists/*
+
+@[  end if]@
+@[end if]@
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{
