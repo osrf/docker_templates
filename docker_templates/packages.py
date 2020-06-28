@@ -24,12 +24,14 @@ version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
 
 packagePatternTemplateLookup = {
     'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*?(?:\r*\n{2}))'),
+    'ignition_packages':  string.Template(r'(\bPackage: $package\n)(.*?(?:\r*\n{2}))'),
     'ros_packages':     string.Template(r'(\bPackage: ros-$rosdistro_name-$package\n)(.*?(?:\r*\n{2}))'),
     'ros2_packages':    string.Template(r'(\bPackage: ros-$ros2distro_name-$package\n)(.*?(?:\r*\n{2}))'),
 }
 
 indexUrlTemplateLookup = {
     'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/main/binary-$arch/Packages'),
+    'ignition_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/main/binary-$arch/Packages'),
     'ros_packages':     string.Template('http://packages.ros.org/ros/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
     'ros2_packages':    string.Template('http://packages.ros.org/ros2/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
     'ros_packages_snapshots':    string.Template('http://snapshots.ros.org/$rosdistro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
@@ -38,12 +40,14 @@ indexUrlTemplateLookup = {
 
 packageNameVersionTemplateLookup = {
     'gazebo_packages':  string.Template('$package=$package_version*'),
+    'ignition_packages':  string.Template('$package=$package_version*'),
     'ros_packages':     string.Template('ros-$rosdistro_name-$package=$package_version*'),
     'ros2_packages':    string.Template('ros-$ros2distro_name-$package=$package_version*'),
 }
 
 packageNameTemplateLookup = {
     'gazebo_packages':  string.Template('$package'),
+    'ignition_packages':  string.Template('$package'),
     'ros_packages':     string.Template('ros-$rosdistro_name-$package'),
     'ros2_packages':    string.Template('ros-$ros2distro_name-$package'),
 }
