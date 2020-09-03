@@ -19,7 +19,8 @@
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
 @
-# install gazebo packages
-RUN apt-get update && apt-get install -q -y --no-install-recommends \
-    @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='gazebo',
+    packages=gazebo_packages,
+))@

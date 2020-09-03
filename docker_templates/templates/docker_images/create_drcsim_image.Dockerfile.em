@@ -41,11 +41,11 @@ RUN . /etc/os-release \
 @[if 'gazebo_packages' in locals()]@
 @[  if gazebo_packages]@
 
-# install ros packages
-RUN apt-get update && apt-get install -y \
-    @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='gazebo',
+    packages=gazebo_packages,
+))@
 @[  end if]@
 @[end if]@
 @[if 'entrypoint_name' in locals()]@

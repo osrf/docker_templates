@@ -34,10 +34,10 @@ RUN rosdep init && \
 @
 @[if 'ros_packages' in locals()]@
 @[  if ros_packages]@
-# install ros packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='ros',
+    packages=ros_packages,
+))@
 @[  end if]@
 @[end if]@

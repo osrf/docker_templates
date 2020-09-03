@@ -46,22 +46,18 @@ RUN pip3 install -U \
 ENV ROS1_DISTRO @rosdistro_name
 ENV ROS2_DISTRO @ros2distro_name
 @[if 'ros_packages' in locals()]@
-@[  if ros_packages]@
-# install ros packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[  end if]@
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='ros',
+    packages=ros_packages,
+))@
 @[end if]@
 @[if 'ros2_packages' in locals()]@
-@[  if ros2_packages]@
-# install ros2 packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros2_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
-@[  end if]@
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='ros2',
+    packages=ros2_packages,
+))@
 @[end if]@
 @[if 'downstream_packages' in locals()]@
 @[  if downstream_packages]@
