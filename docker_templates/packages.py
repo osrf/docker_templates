@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import gzip
 import string
 import re
 import urllib.request
@@ -29,11 +30,11 @@ packagePatternTemplateLookup = {
 }
 
 indexUrlTemplateLookup = {
-    'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/main/binary-$arch/Packages'),
-    'ros_packages':     string.Template('http://packages.ros.org/ros/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
-    'ros2_packages':    string.Template('http://packages.ros.org/ros2/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
-    'ros_packages_snapshots':    string.Template('http://snapshots.ros.org/$rosdistro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
-    'ros2_packages_snapshots':    string.Template('http://snapshots.ros.org/$ros2distro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages'),
+    'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/main/binary-$arch/Packages.gz'),
+    'ros_packages':     string.Template('http://packages.ros.org/ros/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
+    'ros2_packages':    string.Template('http://packages.ros.org/ros2/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
+    'ros_packages_snapshots':    string.Template('http://snapshots.ros.org/$rosdistro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
+    'ros2_packages_snapshots':    string.Template('http://snapshots.ros.org/$ros2distro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
 }
 
 packageNameVersionTemplateLookup = {
@@ -54,7 +55,7 @@ def getPackageIndex(data, package_index_url):
     # Download package index
     req = urllib.request.Request(package_index_url)
     with urllib.request.urlopen(req) as response:
-        package_index = response.read().decode('utf-8')
+        package_index = gzip.decompress(response.read()).decode('utf-8')
 
     return package_index
 
