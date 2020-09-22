@@ -45,6 +45,7 @@ RUN pip3 install -U \
 
 ENV ROS1_DISTRO @rosdistro_name
 ENV ROS2_DISTRO @ros2distro_name
+
 @[if 'ros_packages' in locals()]@
 @(TEMPLATE(
     'snippet/label_and_install_package_list.Dockerfile.em',
