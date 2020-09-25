@@ -52,11 +52,11 @@ ENV LC_ALL C.UTF-8
 
 ENV ROS_DISTRO @rosdistro_name
 
-# install ros packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='ros',
+    packages=ros_packages,
+))@
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{

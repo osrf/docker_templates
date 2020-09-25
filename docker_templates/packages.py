@@ -23,6 +23,8 @@ from docker_templates.eol_distro import isDistroEOL
 #  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
 version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
 
+sha256_pattern = r'(?<=SHA256: )[0-9a-f]{64}'
+
 packagePatternTemplateLookup = {
     'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*?(?:\r*\n{2}))'),
     'ros_packages':     string.Template(r'(\bPackage: ros-$rosdistro_name-$package\n)(.*?(?:\r*\n{2}))'),
@@ -37,10 +39,10 @@ indexUrlTemplateLookup = {
     'ros2_packages_snapshots':    string.Template('http://snapshots.ros.org/$ros2distro_name/final/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
 }
 
-packageNameVersionTemplateLookup = {
-    'gazebo_packages':  string.Template('$package=$package_version*'),
-    'ros_packages':     string.Template('ros-$rosdistro_name-$package=$package_version*'),
-    'ros2_packages':    string.Template('ros-$ros2distro_name-$package=$package_version*'),
+packageVersionTemplateLookup = {
+    'gazebo_packages':  string.Template('=$package_version*'),
+    'ros_packages':     string.Template('=$package_version*'),
+    'ros2_packages':    string.Template('=$package_version*'),
 }
 
 packageNameTemplateLookup = {
@@ -67,12 +69,27 @@ def getPackagePattern(data, package_pattern_template, package):
 
     return package_pattern
 
-def getPackageVersion(data, package_pattern, package, package_index):
-    """Use package index to get package version"""
+def getPackageInfo(package_pattern, package_index):
+    """Use package index to get package info"""
 
-    # Parse for version_number
+    # Parse for package info
     matchs = re.search(package_pattern, package_index)
     package_info = matchs.group(0)
+
+    return package_info
+
+def getPackageSHA256(package_info):
+    """Use package info to get package sha256"""
+
+    # Parse for SHA56
+    package_sha256 = re.search(sha256_pattern, package_info).group(0) # extract sha256
+
+    return package_sha256
+
+def getPackageVersion(package_info):
+    """Use package info to get package version"""
+
+    # Parse for version_number
     package_version = re.search(version_pattern, package_info).group(0) # extract version_number
 
     return package_version
@@ -82,33 +99,26 @@ def getPackageVersions(data, package_index, packages, package_type):
 
     package_versions = []
 
-    if data['version'] != False:
-        for package in packages:
+    # Determine package_pattern
+    package_pattern_template = packagePatternTemplateLookup[package_type]
+    package_name_template = packageNameTemplateLookup[package_type]
+    package_version_template = packageVersionTemplateLookup[package_type]
 
-            # Determine package_pattern
-            package_pattern_template = packagePatternTemplateLookup[package_type]
-            package_pattern = getPackagePattern(data, package_pattern_template, package)
+    for package in packages:
+        package_pattern = getPackagePattern(data, package_pattern_template, package)
+        package_name = package_name_template.substitute(data, package=package)
+        package_info = getPackageInfo(package_pattern, package_index)
+        package_sha256 = getPackageSHA256(package_info)
 
-            # Determine package_version
-            package_version = getPackageVersion(data, package_pattern, package, package_index)
+        if data['version'] != False:
+            version = getPackageVersion(package_info)
+            package_version = package_version_template.substitute(data, package_version=version)
+        else:        
+            package_version=''
 
-            # Determine package_pattern
-            package_name_template = packageNameVersionTemplateLookup[package_type]
-            package_name = package_name_template.substitute(data, package=package, package_version=package_version)
+        package_versions.append(dict(name=package_name, version=package_version, sha256=package_sha256))
 
-            package_versions.append(package_name)
-
-        return package_versions
-    else:
-        for package in packages:
-
-            # Determine package_pattern
-            package_name_template = packageNameTemplateLookup[package_type]
-            package_name = package_name_template.substitute(data, package=package)
-
-            package_versions.append(package_name)
-
-        return package_versions
+    return package_versions
 
 def expandPackages(data):
     for package_type in indexUrlTemplateLookup:

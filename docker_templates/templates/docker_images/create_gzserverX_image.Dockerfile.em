@@ -60,10 +60,11 @@ ENV LC_ALL C.UTF-8
 RUN rosdep init \
     && rosdep update
 
-# install ros packages
-RUN apt-get update && apt-get install -y \
-    @(' \\\n    '.join(ros_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='ros',
+    packages=ros_packages,
+))@
 @[  end if]@
 @[end if]@
 
@@ -77,10 +78,11 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD8
 RUN . /etc/os-release \
     && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-latest.list
 
-# install gazebo packages
-RUN apt-get update && apt-get install -q -y \
-    @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='gazebo',
+    packages=gazebo_packages,
+))@
 @[end if]@
 @[end if]@
 

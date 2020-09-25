@@ -38,11 +38,11 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD8
 RUN . /etc/os-release \
     && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable `lsb_release -sc` main" > /etc/apt/sources.list.d/gazebo-latest.list
 
-# install gazebo packages
-RUN apt-get update && apt-get install -q -y --no-install-recommends \
-    @(' \\\n    '.join(gazebo_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='gazebo',
+    packages=gazebo_packages,
+))@
 # setup environment
 EXPOSE 11345
 

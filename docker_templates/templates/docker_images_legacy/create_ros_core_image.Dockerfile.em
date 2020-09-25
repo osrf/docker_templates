@@ -48,7 +48,7 @@ ENV LANG en_US.UTF-8
 # install ros packages
 ENV ROS_DISTRO @rosdistro_name
 RUN apt-get update && apt-get install -y \
-    @(' \\\n    '.join(ros_packages))@  \
+    @(' \\\n    '.join('{name}{version}'.format(**p) for p in ros_packages))@  \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /var/lib/apt/lists/partial
 

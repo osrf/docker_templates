@@ -66,11 +66,11 @@ RUN pip3 install -U \
 @[  end if]@
 @[end if]@
 @
-# install ros2 packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    @(' \\\n    '.join(ros2_packages))@  \
-    && rm -rf /var/lib/apt/lists/*
-
+@(TEMPLATE(
+    'snippet/label_and_install_package_list.Dockerfile.em',
+    group='ros2',
+    packages=ros2_packages,
+))@
 @[if 'entrypoint_name' in locals()]@
 @[  if entrypoint_name]@
 @{
