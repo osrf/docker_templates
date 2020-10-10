@@ -26,7 +26,7 @@ version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
 sha256_pattern = r'(?<=SHA256: )[0-9a-f]{64}'
 
 packagePatternTemplateLookup = {
-    'gazebo_packages':  string.Template(r'(\bPackage: gazebo$gazebo_version\n)(.*?(?:\r*\n{2}))'),
+    'gazebo_packages':  string.Template(r'(\bPackage: $package\n)(.*?(?:\r*\n{2}))'),
     'ros_packages':     string.Template(r'(\bPackage: ros-$rosdistro_name-$package\n)(.*?(?:\r*\n{2}))'),
     'ros2_packages':    string.Template(r'(\bPackage: ros-$ros2distro_name-$package\n)(.*?(?:\r*\n{2}))'),
 }
