@@ -30,7 +30,7 @@ template_dependencies = [
     packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
-@
+
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
 

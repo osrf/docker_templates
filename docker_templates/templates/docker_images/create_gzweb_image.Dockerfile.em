@@ -23,7 +23,7 @@ template_dependencies = [
     packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
-@
+
 @(TEMPLATE(
     'snippet/label_and_install_package_list.Dockerfile.em',
     group='gazebo',

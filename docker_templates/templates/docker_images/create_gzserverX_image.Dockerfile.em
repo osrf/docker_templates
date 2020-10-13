@@ -32,7 +32,7 @@ template_dependencies = [
     packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
-@
+
 RUN apt-add-repository ppa:libccd-debs \
     && apt-add-repository ppa:fcl-debs \
     && apt-add-repository ppa:dartsim
