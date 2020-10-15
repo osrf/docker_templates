@@ -12,6 +12,5 @@ if isinstance(packages, list):
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     @(' \\\n    '.join(sorted(packages)))@  \
     && rm -rf /var/lib/apt/lists/*
-
 @[  end if]@
 @[end if]@

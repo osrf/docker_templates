@@ -37,7 +37,7 @@ template_dependencies = [
     packages=template_dependencies,
     upstream_packages=upstream_packages if 'upstream_packages' in locals() else [],
 ))@
-@
+
 @(TEMPLATE(
     'snippet/setup_ros_sources.Dockerfile.em',
     os_name=os_name,

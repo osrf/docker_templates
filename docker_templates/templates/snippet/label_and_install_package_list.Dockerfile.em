@@ -1,6 +1,6 @@
 @[if packages]@
 # label @group packages
-LABEL @(' \\\n      '.join('sha256.{name}={sha256}'.format(**p) for p in packages))@
+LABEL @(' \\\n      '.join('org.osrfoundation.{name}.sha256={sha256}'.format(**p) for p in packages))@
 
 
 # install @group packages
