@@ -30,6 +30,7 @@ def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
         'ardent',
         'bouncy',
         'crystal',
+        'eloquent',
     ]
     eol_base_images = [
         # Ubuntu
@@ -52,5 +53,6 @@ def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
         # Debian
         'wheezy',
         'jessie',
+        'stretch',
     ]
     return os_distro_name in eol_base_images or ros_distro_name in eol_ros_distros
