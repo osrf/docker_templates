@@ -25,6 +25,7 @@ def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
         'hydro',
         'indigo',
         'jade',
+        'kinetic',
         'lunar',
         # ROS 2
         'ardent',
