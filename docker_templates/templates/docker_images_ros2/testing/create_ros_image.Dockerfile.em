@@ -38,15 +38,19 @@ if 'pip3_install' in locals():
     testing_repo=True,
 ))@
 
-# setup environment
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
     ros_version=ros_version,
 ))@
 
+# setup environment
+ENV ROS_DISTRO @ros2distro_name
+@[if 'env_before' in locals()]@
+@[  for env_var, env_val in env_before.items()]@
+ENV @(env_var) @(env_val)
+@[  end for]@
+
+@[end if]@
 @[if 'ros2_repo_packages' in locals()]@
 @[  if ros2_repo_packages]@
 # install packages from the ROS repositories
@@ -65,10 +69,6 @@ RUN pip3 install -U \
 
 @[  end if]@
 @[end if]@
-@(TEMPLATE(
-    'snippet/check_pytest_regression.Dockerfile.em',
-))@
-@
 # bootstrap rosdep
 @[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@
@@ -76,7 +76,7 @@ ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
 @[  end if]@
 @[end if]@
 RUN rosdep init \
-    && rosdep update
+    && rosdep update --rosdistro $ROS_DISTRO
 
 @(TEMPLATE(
     'snippet/setup_colcon_mixin_metadata.Dockerfile.em',
@@ -89,7 +89,6 @@ entrypoint_file = entrypoint_name.split('/')[-1]
 }@
 # setup entrypoint
 COPY ./@entrypoint_file /
-
 ENTRYPOINT ["/@entrypoint_file"]
 @[  end if]@
 @[end if]@
