@@ -18,12 +18,17 @@ if isDistroEOL(ros_distro_name=ros_distro_name, os_distro_name=os_code_name):
     source_suffix = 'snapshots'
 else:
     repo_key = 'C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'
-    source_suffix = 'latest'
+    if testing_repo:
+       apt_suffix = '-testing'
+       source_suffix = 'testing'
+    else:
+       apt_suffix = ''
+       source_suffix = 'latest'
 
     if int(ros_version) == 1:
-        repo_url = 'http://packages.ros.org/ros/ubuntu'
+        repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
     elif int(ros_version) == 2:
-        repo_url = 'http://packages.ros.org/ros2/ubuntu'
+        repo_url = f'http://packages.ros.org/ros2{apt_suffix}/ubuntu'
 }@
 # setup sources.list
 RUN echo "deb @(repo_url) @(os_code_name) main" > /etc/apt/sources.list.d/ros@(ros_version)-@(source_suffix).list
