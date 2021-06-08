@@ -18,12 +18,12 @@ if isDistroEOL(ros_distro_name=ros_distro_name, os_distro_name=os_code_name):
     source_suffix = 'snapshots'
 else:
     repo_key = 'C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'
-    if testing_repo:
-       apt_suffix = '-testing'
-       source_suffix = 'testing'
-    else:
-       apt_suffix = ''
-       source_suffix = 'latest'
+    apt_suffix = ''
+    source_suffix = 'latest'
+    if 'testing_repo' in locals():
+        if testing_repo:
+            apt_suffix = '-testing'
+            source_suffix = 'testing'
 
     if int(ros_version) == 1:
         repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
