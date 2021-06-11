@@ -30,6 +30,7 @@ def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
         'ardent',
         'bouncy',
         'crystal',
+        'dashing',
         'eloquent',
     ]
     eol_base_images = [
