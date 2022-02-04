@@ -9,11 +9,14 @@ if int(ros_version) == 2:
         'python3-vcstool',
     ]
 else:
+    prefix = "python"
+    if 'os_code_name' in locals() and os_code_name in ['buster', 'focal']:
+        prefix += "3"
     package_list = [
         'build-essential',
-        'python-rosdep',
-        'python-rosinstall',
-        'python-vcstools',
+        f'{prefix}-rosdep',
+        f'{prefix}-rosinstall',
+        f'{prefix}-vcstools',
     ]
 }@
 # install bootstrap tools
