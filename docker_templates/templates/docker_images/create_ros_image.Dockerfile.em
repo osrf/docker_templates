@@ -24,6 +24,7 @@
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
     ros_version=ros_version,
+    os_code_name=os_code_name,
 ))@
 
 # bootstrap rosdep
