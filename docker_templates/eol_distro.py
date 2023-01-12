@@ -33,6 +33,7 @@ def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
         'crystal',
         'dashing',
         'eloquent',
+        'galactic',
     ]
     eol_base_images = [
         # Ubuntu
