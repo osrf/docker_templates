@@ -1,20 +1,25 @@
 @{
-if int(ros_version) == 2:
-    package_list = [
-        'build-essential',
+import rosdistro
+index = rosdistro.get_index(rosdistro.get_index_url())
+dist_info = index.distributions[ros_distro]
+ros_version = int(dist_info['distribution_type'][-1])
+ros_python_version = dist_info['python_version']
+prefix = 'python'
+if ros_python_version == 3:
+    prefix += str(ros_python_version)
+package_list = [
+    'build-essential',
+    f'{prefix}-rosdep',
+]
+if ros_version == 2:
+    package_list += [
         'git',
-        'python3-colcon-common-extensions',
-        'python3-colcon-mixin',
-        'python3-rosdep',
-        'python3-vcstool',
+        f'{prefix}-colcon-common-extensions',
+        f'{prefix}-colcon-mixin',
+        f'{prefix}-vcstool',
     ]
 else:
-    prefix = "python"
-    if 'os_code_name' in locals() and os_code_name in ['buster', 'focal']:
-        prefix += "3"
-    package_list = [
-        'build-essential',
-        f'{prefix}-rosdep',
+    package_list += [
         f'{prefix}-rosinstall',
         f'{prefix}-vcstools',
     ]
