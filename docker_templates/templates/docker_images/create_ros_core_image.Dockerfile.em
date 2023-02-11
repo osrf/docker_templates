@@ -42,8 +42,7 @@ template_dependencies = [
     'snippet/setup_ros_sources.Dockerfile.em',
     os_name=os_name,
     os_code_name=os_code_name,
-    rosdistro_name=rosdistro_name,
-    ros_version=ros_version,
+    ros_distro=rosdistro_name,
 ))@
 
 # setup environment

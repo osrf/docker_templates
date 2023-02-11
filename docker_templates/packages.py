@@ -17,6 +17,8 @@ import string
 import re
 import urllib.request
 
+import rosdistro
+
 from docker_templates.eol_distro import isDistroEOL
 
 # TODO: think of a better version pattern like
@@ -124,12 +126,23 @@ def expandPackages(data):
     for package_type in indexUrlTemplateLookup:
         if package_type in data:
             # determine if distro is eol and apply the appropriate index URL template
-            ros_distro_name = ''
-            if package_type == 'ros_packages':
-                ros_distro_name = data['rosdistro_name']
-            elif package_type == 'ros2_packages':
-                ros_distro_name = data['ros2distro_name']
-            eol = isDistroEOL(ros_distro_name=ros_distro_name, os_distro_name=data['os_code_name'])
+            ros_distro_name = ""
+            if package_type == "ros_packages":
+                ros_distro_name = data["rosdistro_name"]
+            elif package_type == "ros2_packages":
+                ros_distro_name = data["ros2distro_name"]
+            if ros_distro_name != "":
+                index = rosdistro.get_index(rosdistro.get_index_url())
+                dist_info = index.distributions[ros_distro_name]
+                eol = isDistroEOL(
+                    ros_distro_status=dist_info["distribution_status"],
+                    os_distro_name=data["os_code_name"],
+                )
+            else:
+                eol = isDistroEOL(
+                    ros_distro_status=None,
+                    os_distro_name=data["os_code_name"],
+                )
             if eol:
                 package_index_url_template = indexUrlTemplateLookup[package_type + '_snapshots']
             else:

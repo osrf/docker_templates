@@ -1,16 +1,17 @@
 @{
 import os
 
-from docker_templates.eol_distro import isDistroEOL
-if int(ros_version) == 2:
-    ros_distro_name = ros2distro_name
-elif int(ros_version) == 1:
-    ros_distro_name = rosdistro_name
+import rosdistro
+index = rosdistro.get_index(rosdistro.get_index_url())
+dist_info = index.distributions[ros_distro]
+ros_version = int(dist_info['distribution_type'][-1])
 
-if isDistroEOL(ros_distro_name=ros_distro_name, os_distro_name=os_code_name):
+from docker_templates.eol_distro import isDistroEOL
+
+if isDistroEOL(ros_distro_status=dist_info['distribution_status'], os_distro_name=os_code_name):
     repo_url = os.path.join(
         'http://snapshots.ros.org',
-        str(ros_distro_name),
+        str(ros_distro),
         'final',
         str(os_name)
     )
@@ -18,17 +19,13 @@ if isDistroEOL(ros_distro_name=ros_distro_name, os_distro_name=os_code_name):
     source_suffix = 'snapshots'
 else:
     repo_key = 'C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'
-    apt_suffix = ''
+    apt_suffix = '2' if ros_version == 2 else ''
     source_suffix = 'latest'
     if 'testing_repo' in locals():
         if testing_repo:
-            apt_suffix = '-testing'
+            apt_suffix += '-testing'
             source_suffix = 'testing'
-
-    if int(ros_version) == 1:
-        repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
-    elif int(ros_version) == 2:
-        repo_url = f'http://packages.ros.org/ros2{apt_suffix}/ubuntu'
+    repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
 }@
 # setup sources.list
 RUN echo "deb @(repo_url) @(os_code_name) main" > /etc/apt/sources.list.d/ros@(ros_version)-@(source_suffix).list
