@@ -25,7 +25,7 @@
 @
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version='1',
+    ros_distro=ros_distro,
 ))@
 
 # setup environment

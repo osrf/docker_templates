@@ -23,7 +23,7 @@
 @[if 'bootstrap_ros_tools' in locals()]@
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version=ros_version,
+    ros_distro=rosdistro_name,
     os_code_name=os_code_name,
 ))@
 

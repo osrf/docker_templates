@@ -39,8 +39,7 @@ RUN pip3 install -U \
     'snippet/setup_ros_sources.Dockerfile.em',
     os_name=os_name,
     os_code_name=os_code_name,
-    rosdistro_name=rosdistro_name,
-    ros_version='1',
+    ros_distro=rosdistro_name,
 ))@
 
 ENV ROS1_DISTRO @rosdistro_name

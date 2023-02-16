@@ -46,9 +46,7 @@ if 'pip3_install' in locals():
     'snippet/setup_ros_sources.Dockerfile.em',
     os_name=os_name,
     os_code_name=os_code_name,
-    ros2distro_name=ros2distro_name,
-    rosdistro_name='',
-    ros_version=ros_version,
+    ros_distro=ros2distro_name,
 ))@
 
 # setup environment

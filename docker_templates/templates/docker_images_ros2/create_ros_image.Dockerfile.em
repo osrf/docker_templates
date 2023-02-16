@@ -30,7 +30,7 @@ if 'pip3_install' in locals():
 @[if 'bootstrap_ros_tools' in locals()]@
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version=ros_version,
+    ros_distro=ros2distro_name,
 ))@
 
 # bootstrap rosdep

@@ -13,28 +13,9 @@
 # limitations under the License.
 
 
-def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
-    eol_ros_distros = [
-        # ROS 1
-        'boxturtle',
-        'cturtle',
-        'diamondback',
-        'electric',
-        'fuerte',
-        'groovy',
-        'hydro',
-        'indigo',
-        'jade',
-        'kinetic',
-        'lunar',
-        # ROS 2
-        'ardent',
-        'bouncy',
-        'crystal',
-        'dashing',
-        'eloquent',
-        'galactic',
-    ]
+def isDistroEOL(*, ros_distro_status=None, os_distro_name=None):
+    if ros_distro_status == "end-of-life":
+        return True
     eol_base_images = [
         # Ubuntu
         'lucid',
@@ -58,4 +39,4 @@ def isDistroEOL(*, ros_distro_name=None, os_distro_name=None):
         'jessie',
         'stretch',
     ]
-    return os_distro_name in eol_base_images or ros_distro_name in eol_ros_distros
+    return os_distro_name in eol_base_images
