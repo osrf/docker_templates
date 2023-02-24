@@ -38,5 +38,6 @@ def isDistroEOL(*, ros_distro_status=None, os_distro_name=None):
         'wheezy',
         'jessie',
         'stretch',
+        'buster',
     ]
     return os_distro_name in eol_base_images
