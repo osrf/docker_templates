@@ -21,6 +21,13 @@ import rosdistro
 
 from docker_templates.eol_distro import isDistroEOL
 
+DockerToAptArchLookup = {
+    'amd64': 'amd64',
+    'arm32v7':'armhf',
+    'arm64v8':'arm64',
+    'i386':'i386'
+}
+
 # TODO: think of a better version pattern like
 #  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
 version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
@@ -147,7 +154,10 @@ def expandPackages(data):
                 package_index_url_template = indexUrlTemplateLookup[package_type + '_snapshots']
             else:
                 package_index_url_template = indexUrlTemplateLookup[package_type]
-            package_index_url = package_index_url_template.substitute(data)
-            package_index = getPackageIndex(data, package_index_url)
-            package_versions = getPackageVersions(data, package_index, data[package_type], package_type)
-            data[package_type] = package_versions
+            data['archs'] = {i : dict() for i in data['archs']}
+            for arch in data['archs']:
+                data['arch'] = DockerToAptArchLookup[arch]
+                package_index_url = package_index_url_template.substitute(data)
+                package_index = getPackageIndex(data, package_index_url)
+                package_versions = getPackageVersions(data, package_index, data[package_type], package_type)
+                data['archs'][arch][package_type] = package_versions
