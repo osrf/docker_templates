@@ -139,6 +139,7 @@ def getPackageVersions(data, package_index, packages, package_type):
     return package_versions
 
 def expandPackages(data):
+    data["archs"] = {i: dict() for i in data["archs"]}
     for package_type in indexUrlTemplateLookup:
         if package_type in data:
             # determine if distro is eol and apply the appropriate index URL template
@@ -163,7 +164,6 @@ def expandPackages(data):
                 package_index_url_template = indexUrlTemplateLookup[package_type + '_snapshots']
             else:
                 package_index_url_template = indexUrlTemplateLookup[package_type]
-            data['archs'] = {i : dict() for i in data['archs']}
             for arch in data['archs']:
                 data['arch'] = DockerToAptArchLookup[arch]
                 package_index_url = package_index_url_template.substitute(data)
