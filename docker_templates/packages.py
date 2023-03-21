@@ -28,9 +28,7 @@ DockerToAptArchLookup = {
     'i386':'i386'
 }
 
-# TODO: think of a better version pattern like
-#  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
-version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
+version_pattern = r'(?<=Version: ).*\n'
 
 sha256_pattern = r'(?<=SHA256: )[0-9a-f]{64}'
 
@@ -49,9 +47,9 @@ indexUrlTemplateLookup = {
 }
 
 packageVersionTemplateLookup = {
-    'gazebo_packages':  string.Template('=$package_version*'),
-    'ros_packages':     string.Template('=$package_version*'),
-    'ros2_packages':    string.Template('=$package_version*'),
+    'gazebo_packages':  string.Template('=$package_version'),
+    'ros_packages':     string.Template('=$package_version'),
+    'ros2_packages':    string.Template('=$package_version'),
 }
 
 packageNameTemplateLookup = {
