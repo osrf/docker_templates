@@ -21,6 +21,8 @@ import rosdistro
 
 from docker_templates.eol_distro import isDistroEOL
 
+_cached_package_indexs = {}
+
 DockerToAptArchLookup = {
     'amd64': 'amd64',
     'arm32v7':'armhf',
@@ -61,10 +63,15 @@ packageNameTemplateLookup = {
 def getPackageIndex(data, package_index_url):
     """Get current online package index"""
 
-    # Download package index
-    req = urllib.request.Request(package_index_url)
-    with urllib.request.urlopen(req) as response:
-        package_index = gzip.decompress(response.read()).decode('utf-8')
+    global _cached_package_indexs
+    if package_index_url in _cached_package_indexs:
+        package_index = _cached_package_indexs[package_index_url]
+    else:
+        # Download package index
+        req = urllib.request.Request(package_index_url)
+        with urllib.request.urlopen(req) as response:
+            package_index = gzip.decompress(response.read()).decode('utf-8')
+        _cached_package_indexs[package_index_url] = package_index
 
     return package_index
 
