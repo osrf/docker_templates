@@ -2,20 +2,33 @@ import os
 import shutil
 import string
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+from em import Interpreter
+
 
 class AltTemplate(string.Template):
     delimiter = '@'
     idpattern = r'[a-z][_a-z0-9]*'
 
 
-def interpret_tempate(tempate, data, tempate_class=string.Template):
-    # Read image perams using platform perams
-    with open(tempate, 'r') as f:
-        value = tempate_class(f.read())
+def interpret_tempate(tempate, data):
 
-    value = value.substitute(data)
+    output = StringIO()
+    try:
+        interpreter = Interpreter(output=output)
+        interpreter.file(open(tempate, 'r'), locals=data)
+        output = output.getvalue()
+    except Exception as e:
+        print("Error processing %s" % tempate)
+        raise
+    finally:
+        interpreter.shutdown()
+        interpreter = None
 
-    return value
+    return output
 
 
 def populate_path(data, path):
