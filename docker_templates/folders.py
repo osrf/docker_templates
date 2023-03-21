@@ -51,6 +51,7 @@ def populate_paths(manifest, args, create_dockerfiles):
                 os_code_data['release_name'] = release_name
                 os_code_data['os_name'] = os_name
                 os_code_data['os_code_name'] = os_code_name
+                os_code_data['archs'] = os_code_data['archs']
 
                 populate_path(data=os_code_data, path=dockerfolder_dir)
 
