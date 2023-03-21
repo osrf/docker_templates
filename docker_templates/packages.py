@@ -88,6 +88,8 @@ def getPackageInfo(package_pattern, package_index):
 
     # Parse for package info
     matchs = re.search(package_pattern, package_index)
+    if matchs is None:
+        return None
     package_info = matchs.group(0)
 
     return package_info
@@ -122,6 +124,8 @@ def getPackageVersions(data, package_index, packages, package_type):
         package_pattern = getPackagePattern(data, package_pattern_template, package)
         package_name = package_name_template.substitute(data, package=package)
         package_info = getPackageInfo(package_pattern, package_index)
+        if package_info is None:
+            continue
         package_sha256 = getPackageSHA256(package_info)
 
         if data['version'] != False:
