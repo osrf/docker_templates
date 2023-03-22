@@ -16,6 +16,7 @@ import gzip
 import string
 import re
 import urllib.request
+# import json
 
 import rosdistro
 
@@ -139,6 +140,9 @@ def getPackageVersions(data, package_index, packages, package_type):
     return package_versions
 
 def expandPackages(data):
+    # print("################################################################")
+    # print(json.dumps(data,sort_keys=True, indent=4))
+    # print("################################################################")
     data["archs"] = {i: dict() for i in data["archs"]}
     for package_type in indexUrlTemplateLookup:
         if package_type in data:
