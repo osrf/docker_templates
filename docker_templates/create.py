@@ -59,10 +59,11 @@ def create_lockfiles(data):
             if not os.path.exists(lockfile_dir):
                 os.makedirs(lockfile_dir)
             lockfile_path = os.path.join(lockfile_dir, arch_name + '.txt')
-            with open(lockfile_path, 'w') as h:
-                for package in package_list:
-                    line = f"{package['name']}{package['version']}"
-                    h.write(line)
+            if package_list:
+                with open(lockfile_path, 'w') as h:
+                    for package in package_list:
+                        line = f"{package['name']}{package['version']}"
+                        h.write(line)
 
 def create_entrypoint(data):
     # find entrypoint path
