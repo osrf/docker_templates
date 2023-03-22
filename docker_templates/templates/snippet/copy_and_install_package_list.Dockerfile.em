@@ -1,7 +1,7 @@
 @[if packages]@
 # copy @group packages
 ARG TARGETARCH
-COPY $TARGETARCH/@(package_type).txt /opt/@(group)/
+COPY @(package_type)/$TARGETARCH.txt /opt/@(group)/@(package_type).txt
 
 # install @group packages
 RUN apt-get update \

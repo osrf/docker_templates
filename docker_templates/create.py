@@ -54,11 +54,11 @@ def create_files(data, verbose=False):
 def create_lockfiles(data):
     dockerfile_dir = data['dockerfile_dir']
     for arch_name, arch_data in data['archs'].items():
-        arch_path = os.path.join(dockerfile_dir, arch_name)
-        if not os.path.exists(arch_path):
-            os.makedirs(arch_path)
         for package_type, package_list in arch_data.items():
-            lockfile_path = os.path.join(arch_path, package_type + '.txt')
+            lockfile_dir = os.path.join(dockerfile_dir, package_type)
+            if not os.path.exists(lockfile_dir):
+                os.makedirs(lockfile_dir)
+            lockfile_path = os.path.join(lockfile_dir, arch_name + '.txt')
             with open(lockfile_path, 'w') as h:
                 for package in package_list:
                     line = f"{package['name']}{package['version']}"
