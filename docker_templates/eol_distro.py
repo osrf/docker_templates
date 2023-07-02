@@ -33,6 +33,7 @@ def isDistroEOL(*, ros_distro_status=None, os_distro_name=None):
         'yakkety',
         'zesty',
         'artful',
+        'bionic',
         'cosmic',
         # Debian
         'wheezy',
