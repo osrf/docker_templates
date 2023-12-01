@@ -27,8 +27,8 @@ else:
             source_suffix = 'testing'
     repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
 }@
-# setup sources.list
-RUN echo "deb @(repo_url) @(os_code_name) main" > /etc/apt/sources.list.d/ros@(ros_version)-@(source_suffix).list
-
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys @(repo_key)
+
+# setup sources.list
+RUN echo "deb @(repo_url) @(os_code_name) main" > /etc/apt/sources.list.d/ros@(ros_version)-@(source_suffix).list
