@@ -32,7 +32,7 @@ RUN set -eux; \
        key='@(repo_key)'; \
        export GNUPGHOME="$(mktemp -d)"; \
        gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
-       mkdir -p /etc/apt/keyrings; \
+       mkdir -p /usr/share/keyrings; \
        gpg --batch --export "$key" > /usr/share/keyrings/ros@(ros_version)-@(source_suffix)-archive-keyring.gpg; \
        gpgconf --kill all; \
        rm -rf "$GNUPGHOME"
