@@ -16,14 +16,22 @@ import gzip
 import string
 import re
 import urllib.request
+# import json
 
 import rosdistro
 
 from docker_templates.eol_distro import isDistroEOL
 
-# TODO: think of a better version pattern like
-#  r'\d(?!Version\:\s)(.+)(?=(~\w+\n))' but works without a trailing ~
-version_pattern = r'(?<=Version: )\d+\.\d+\.\d+\-\d+'
+_cached_package_indexs = {}
+
+DockerToAptArchLookup = {
+    'amd64': 'amd64',
+    'arm32v7':'armhf',
+    'arm64v8':'arm64',
+    'i386':'i386'
+}
+
+version_pattern = r'(?<=Version: ).*\n'
 
 sha256_pattern = r'(?<=SHA256: )[0-9a-f]{64}'
 
@@ -42,9 +50,9 @@ indexUrlTemplateLookup = {
 }
 
 packageVersionTemplateLookup = {
-    'gazebo_packages':  string.Template('=$package_version*'),
-    'ros_packages':     string.Template('=$package_version*'),
-    'ros2_packages':    string.Template('=$package_version*'),
+    'gazebo_packages':  string.Template('=$package_version'),
+    'ros_packages':     string.Template('=$package_version'),
+    'ros2_packages':    string.Template('=$package_version'),
 }
 
 packageNameTemplateLookup = {
@@ -56,10 +64,15 @@ packageNameTemplateLookup = {
 def getPackageIndex(data, package_index_url):
     """Get current online package index"""
 
-    # Download package index
-    req = urllib.request.Request(package_index_url)
-    with urllib.request.urlopen(req) as response:
-        package_index = gzip.decompress(response.read()).decode('utf-8')
+    global _cached_package_indexs
+    if package_index_url in _cached_package_indexs:
+        package_index = _cached_package_indexs[package_index_url]
+    else:
+        # Download package index
+        req = urllib.request.Request(package_index_url)
+        with urllib.request.urlopen(req) as response:
+            package_index = gzip.decompress(response.read()).decode('utf-8')
+        _cached_package_indexs[package_index_url] = package_index
 
     return package_index
 
@@ -76,6 +89,8 @@ def getPackageInfo(package_pattern, package_index):
 
     # Parse for package info
     matchs = re.search(package_pattern, package_index)
+    if matchs is None:
+        return None
     package_info = matchs.group(0)
 
     return package_info
@@ -110,6 +125,8 @@ def getPackageVersions(data, package_index, packages, package_type):
         package_pattern = getPackagePattern(data, package_pattern_template, package)
         package_name = package_name_template.substitute(data, package=package)
         package_info = getPackageInfo(package_pattern, package_index)
+        if package_info is None:
+            continue
         package_sha256 = getPackageSHA256(package_info)
 
         if data['version'] != False:
@@ -123,6 +140,10 @@ def getPackageVersions(data, package_index, packages, package_type):
     return package_versions
 
 def expandPackages(data):
+    # print("################################################################")
+    # print(json.dumps(data,sort_keys=True, indent=4))
+    # print("################################################################")
+    data["archs"] = {i: dict() for i in data["archs"]}
     for package_type in indexUrlTemplateLookup:
         if package_type in data:
             # determine if distro is eol and apply the appropriate index URL template
@@ -147,7 +168,9 @@ def expandPackages(data):
                 package_index_url_template = indexUrlTemplateLookup[package_type + '_snapshots']
             else:
                 package_index_url_template = indexUrlTemplateLookup[package_type]
-            package_index_url = package_index_url_template.substitute(data)
-            package_index = getPackageIndex(data, package_index_url)
-            package_versions = getPackageVersions(data, package_index, data[package_type], package_type)
-            data[package_type] = package_versions
+            for arch in data['archs']:
+                data['arch'] = DockerToAptArchLookup[arch]
+                package_index_url = package_index_url_template.substitute(data)
+                package_index = getPackageIndex(data, package_index_url)
+                package_versions = getPackageVersions(data, package_index, data[package_type], package_type)
+                data['archs'][arch][package_type] = package_versions

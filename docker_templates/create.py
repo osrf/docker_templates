@@ -21,6 +21,8 @@ from ros_buildfarm.templates import create_dockerfile
 from ros_buildfarm.templates import get_template_path
 from ros_buildfarm.templates import expand_template, get_wrapper_scripts
 
+from docker_templates.packages import indexUrlTemplateLookup
+
 default_template_prefix_path = ros_buildfarm.templates.template_prefix_path
 
 def expand_template_prefix_path(template_packages):
@@ -44,8 +46,24 @@ def create_files(data, verbose=False):
     # generate Dockerfile
     create_dockerfile(template_name, data, dockerfile_dir, verbose)
 
+    create_lockfiles(data)
+
     if 'entrypoint_name' in data:
         create_entrypoint(data)
+
+def create_lockfiles(data):
+    dockerfile_dir = data['dockerfile_dir']
+    for arch_name, arch_data in data['archs'].items():
+        for package_type, package_list in arch_data.items():
+            lockfile_dir = os.path.join(dockerfile_dir, package_type)
+            if not os.path.exists(lockfile_dir):
+                os.makedirs(lockfile_dir)
+            lockfile_path = os.path.join(lockfile_dir, arch_name + '.txt')
+            if package_list:
+                with open(lockfile_path, 'w') as h:
+                    for package in package_list:
+                        line = f"{package['name']}{package['version']}"
+                        h.write(line)
 
 def create_entrypoint(data):
     # find entrypoint path
