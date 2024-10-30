@@ -44,6 +44,7 @@ template_dependencies = [
     os_code_name=os_code_name,
     ros_distro=rosdistro_name,
 ))@
+
 # setup environment
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
