@@ -44,10 +44,10 @@ if 'pip3_install' in locals():
 ))@
 
 # setup environment
-ENV ROS_DISTRO @ros2distro_name
+ENV ROS_DISTRO=@ros2distro_name
 @[if 'env_before' in locals()]@
 @[  for env_var, env_val in env_before.items()]@
-ENV @(env_var) @(env_val)
+ENV @(env_var)=@(env_val)
 @[  end for]@
 
 @[end if]@
@@ -72,7 +72,7 @@ RUN pip3 install -U \
 # bootstrap rosdep
 @[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@
-ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
+ENV ROSDISTRO_INDEX_URL=@(rosdep['rosdistro_index_url'])
 @[  end if]@
 @[end if]@
 RUN rosdep init \

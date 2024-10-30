@@ -43,10 +43,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # setup environment
 RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # install ros packages
-ENV ROS_DISTRO @rosdistro_name
+ENV ROS_DISTRO=@rosdistro_name
 RUN apt-get update && apt-get install -y \
     @(' \\\n    '.join('{name}{version}'.format(**p) for p in ros_packages))@  \
     && rm -rf /var/lib/apt/lists/* \

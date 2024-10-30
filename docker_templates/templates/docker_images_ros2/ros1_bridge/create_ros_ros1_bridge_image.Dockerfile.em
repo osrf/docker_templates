@@ -42,8 +42,8 @@ RUN pip3 install -U \
     ros_distro=rosdistro_name,
 ))@
 
-ENV ROS1_DISTRO @rosdistro_name
-ENV ROS2_DISTRO @ros2distro_name
+ENV ROS1_DISTRO=@rosdistro_name
+ENV ROS2_DISTRO=@ros2distro_name
 
 @[if 'ros_packages' in locals()]@
 @(TEMPLATE(

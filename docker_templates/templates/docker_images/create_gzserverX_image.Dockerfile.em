@@ -46,15 +46,15 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 421C365BD9
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
 
-ENV ROS_DISTRO @rosdistro_name
+ENV ROS_DISTRO=@rosdistro_name
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
     ros_version='1',
 ))@
 
 # setup environment
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 # bootstrap rosdep
 RUN rosdep init \

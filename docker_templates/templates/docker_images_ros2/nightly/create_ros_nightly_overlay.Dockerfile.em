@@ -23,7 +23,7 @@ if 'pip3_install' in locals():
 @[if 'env_before' in locals()]@
 
 @[  for env_var, env_val in env_before.items()]@
-ENV @(env_var) @(env_val)
+ENV @(env_var)=@(env_val)
 @[  end for]@
 @[end if]@
 @(TEMPLATE(
@@ -68,7 +68,7 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh \
 
 # set up environment
 @[  for env_var, env_val in env_after.items()]@
-ENV @(env_var) @(env_val)
+ENV @(env_var)=@(env_val)
 @[  end for]@
 @[end if]@
 @[if 'entrypoint_name' in locals()]@
