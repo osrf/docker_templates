@@ -50,10 +50,10 @@ if 'pip3_install' in locals():
 ))@
 
 # setup environment
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
-ENV ROS_DISTRO @ros2distro_name
+ENV ROS_DISTRO=@ros2distro_name
 
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@

@@ -30,7 +30,7 @@ template_dependencies = [
     packages=gazebo_packages,
 ))@
 # clone gzweb
-ENV GZWEB_WS /root/gzweb
+ENV GZWEB_WS=/root/gzweb
 RUN hg clone https://bitbucket.org/osrf/gzweb $GZWEB_WS
 WORKDIR $GZWEB_WS
 

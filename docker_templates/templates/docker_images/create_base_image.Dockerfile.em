@@ -29,8 +29,8 @@
 ))@
 
 # setup environment
-ENV LANG C.UTF-8
-ENV TZ @timezone
+ENV LANG=C.UTF-8
+ENV TZ=@timezone
 
 # bootstrap rosdep
 RUN rosdep init
@@ -38,7 +38,7 @@ RUN rosdep init
 # install requested metapackage
 RUN apt-get update && apt-get install -q -y --no-install-recommends @(' '.join(packages))@
 
-ENV ROS_DISTRO @(rosdistro)@
+ENV ROS_DISTRO=@(rosdistro)@
 # TODO source rosdistro setup file automatically on entry
 ENTRYPOINT ["bash", "-c"]
 @{

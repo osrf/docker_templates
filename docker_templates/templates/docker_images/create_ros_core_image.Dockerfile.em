@@ -46,10 +46,10 @@ template_dependencies = [
 ))@
 
 # setup environment
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
-ENV ROS_DISTRO @rosdistro_name
+ENV ROS_DISTRO=@rosdistro_name
 
 @(TEMPLATE(
     'snippet/label_and_install_package_list.Dockerfile.em',

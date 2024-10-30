@@ -43,7 +43,7 @@ ENV ROS_VERSION=2 \
 @
 @[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@
-ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
+ENV ROSDISTRO_INDEX_URL=@(rosdep['rosdistro_index_url'])
 RUN rosdep update --rosdistro $ROS_DISTRO
 
 @[  end if]@

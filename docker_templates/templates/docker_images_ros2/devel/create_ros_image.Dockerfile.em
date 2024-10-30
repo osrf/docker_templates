@@ -38,8 +38,8 @@ if 'pip3_install' in locals():
 ))@
 
 # setup environment
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
@@ -71,7 +71,7 @@ RUN pip3 install -U \
 # bootstrap rosdep
 @[if 'rosdep' in locals()]@
 @[  if 'rosdistro_index_url' in rosdep]@
-ENV ROSDISTRO_INDEX_URL @(rosdep['rosdistro_index_url'])
+ENV ROSDISTRO_INDEX_URL=@(rosdep['rosdistro_index_url'])
 @[  end if]@
 @[end if]@
 RUN rosdep init \
@@ -82,7 +82,7 @@ RUN rosdep init \
 ))@
 
 # clone source
-ENV ROS2_WS @(ws)
+ENV ROS2_WS=@(ws)
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
 
