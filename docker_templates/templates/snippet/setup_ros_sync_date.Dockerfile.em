@@ -14,4 +14,4 @@ sorted_data = sorted(data, key=lambda x: x['ref'])
 
 ros_sync_date = sorted_data[-1]['ref'].split('/')[-1]
 }@
-ENV ROS_SYNC_DATE=@(ros_sync_date)@
+ENV ROSDISTRO_PKGS_SYNC_DATE=@(ros_sync_date)@
