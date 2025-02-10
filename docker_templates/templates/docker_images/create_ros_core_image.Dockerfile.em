@@ -49,11 +49,6 @@ template_dependencies = [
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
-@(TEMPLATE(
-    'snippet/setup_ros_sync_date.Dockerfile.em',
-    ros_distro=rosdistro_name,
-))@
-
 ENV ROS_DISTRO=@rosdistro_name
 
 @(TEMPLATE(
