@@ -52,8 +52,9 @@ ENV LC_ALL=C.UTF-8
 ENV ROS_DISTRO=@rosdistro_name
 
 @(TEMPLATE(
-    'snippet/label_and_install_package_list.Dockerfile.em',
+    'snippet/copy_and_install_package_list.Dockerfile.em',
     group='ros',
+    package_type='ros_packages',
     packages=ros_packages,
 ))@
 @[if 'entrypoint_name' in locals()]@

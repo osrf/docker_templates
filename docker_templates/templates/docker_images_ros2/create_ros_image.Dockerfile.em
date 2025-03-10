@@ -53,8 +53,9 @@ RUN pip3 install -U \
 @[end if]@
 @[if 'ros2_packages' in locals()]@
 @(TEMPLATE(
-    'snippet/label_and_install_package_list.Dockerfile.em',
-    group='ros2',
+    'snippet/copy_and_install_package_list.Dockerfile.em',
+    group='ros',
+    package_type='ros2_packages',
     packages=ros2_packages,
 ))@
 @[end if]@
