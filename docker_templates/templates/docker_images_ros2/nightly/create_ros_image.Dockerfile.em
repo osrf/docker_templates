@@ -63,7 +63,7 @@ ENV @(env_var)=@(env_val)
 @[if 'pip3_install' in locals()]@
 @[  if pip3_install]@
 # install python packages
-RUN pip3 install -U \
+RUN pip3 install --no-cache-dir -U \
     @(' \\\n    '.join(pip3_install))@
 
 @[  end if]@
