@@ -28,6 +28,7 @@
 @
 @{
 template_dependencies = [
+    'curl',
     'dirmngr',
     'gnupg2',
 ]
