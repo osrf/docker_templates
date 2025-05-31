@@ -33,7 +33,6 @@ else:
 http = urllib3.PoolManager()
 resp = http.request("GET", "https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest")
 ros_apt_source_version = json.loads(resp.data)["tag_name"]
-
 }@
 
 @[if is_distro_eol]@
