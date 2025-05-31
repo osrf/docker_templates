@@ -16,6 +16,7 @@
 @{
 template_dependencies = [
     'curl',
+    'ca-certificates',
 ]
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
 if 'pip3_install' in locals():
