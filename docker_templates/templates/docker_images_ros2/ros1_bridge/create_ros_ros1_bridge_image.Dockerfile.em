@@ -40,7 +40,7 @@ RUN pip3 install -U \
     os_name=os_name,
     os_code_name=os_code_name,
     ros_distro=rosdistro_name,
-    ros_version=ros_version,
+    ros_version=1,
 ))@
 
 ENV ROS1_DISTRO=@rosdistro_name

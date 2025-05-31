@@ -34,7 +34,7 @@ if 'pip3_install' in locals():
     os_code_name=os_code_name,
     ros2distro_name='rolling',
     rosdistro_name='',
-    ros_version=ros_version,
+    ros_version=2,
 ))@
 
 # setup environment

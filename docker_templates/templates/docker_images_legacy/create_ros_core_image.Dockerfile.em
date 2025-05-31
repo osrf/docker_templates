@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     os_name=os_name,
     os_code_name=os_code_name,
     rosdistro_name=rosdistro_name,
-    ros_version=ros_version,
+    ros_version=1,
 ))@
 
 # setup environment

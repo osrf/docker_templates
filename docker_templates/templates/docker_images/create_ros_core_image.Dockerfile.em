@@ -43,7 +43,7 @@ template_dependencies = [
     os_name=os_name,
     os_code_name=os_code_name,
     ros_distro=rosdistro_name,
-    ros_version=ros_version,
+    ros_version=2,
 ))@
 
 # setup environment

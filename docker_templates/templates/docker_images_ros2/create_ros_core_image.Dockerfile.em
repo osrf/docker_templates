@@ -48,7 +48,7 @@ if 'pip3_install' in locals():
     os_name=os_name,
     os_code_name=os_code_name,
     ros_distro=ros2distro_name,
-    ros_version=ros_version,
+    ros_version=2,
 ))@
 
 # setup environment
