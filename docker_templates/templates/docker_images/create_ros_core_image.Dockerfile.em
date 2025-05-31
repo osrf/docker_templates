@@ -28,6 +28,8 @@
 @
 @{
 template_dependencies = [
+    'ca-certificates',
+    'curl',
     'dirmngr',
     'gnupg2',
 ]
