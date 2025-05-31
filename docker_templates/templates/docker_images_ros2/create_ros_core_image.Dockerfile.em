@@ -28,6 +28,7 @@
 @
 @{
 template_dependencies = [
+    'ca-certificates',
     'dirmngr',
     'gnupg2',
 ]
