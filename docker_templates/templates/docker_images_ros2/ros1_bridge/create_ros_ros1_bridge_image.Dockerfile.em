@@ -14,7 +14,10 @@
     maintainer_name=maintainer_name,
 ))@
 @{
-template_dependencies = []
+template_dependencies = [
+    'curl',
+    'ca-certificates',
+]
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
 if 'pip3_install' in locals():
     if isinstance(pip3_install, list) and pip3_install != []:
