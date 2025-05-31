@@ -29,6 +29,6 @@ else:
 }@
 # Setup ROS Apt sources
 RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}') ;\
-    curl -L -s -o /tmp/ros@(ros_version)-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros@(ros_version)-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" &&\
+    curl -L -s -o /tmp/ros@(apt_suffix)-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros@(apt_suffix)-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" &&\
     apt-get update && \
-    apt-get install /tmp/ros@(ros_version)-apt-source.deb;
+    apt-get install /tmp/ros@(apt_suffix)-apt-source.deb;
