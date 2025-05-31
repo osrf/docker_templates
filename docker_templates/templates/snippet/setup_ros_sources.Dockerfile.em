@@ -1,5 +1,7 @@
 @{
 import os
+import json
+import urllib3
 
 import rosdistro
 index = rosdistro.get_index(rosdistro.get_index_url())
@@ -8,7 +10,8 @@ ros_version = int(dist_info['distribution_type'][-1])
 
 from docker_templates.eol_distro import isDistroEOL
 
-if isDistroEOL(ros_distro_status=dist_info['distribution_status'], os_distro_name=os_code_name):
+is_distro_eol = isDistroEOL(ros_distro_status=dist_info['distribution_status'], os_distro_name=os_code_name)
+if is_distro_eol:
     repo_url = os.path.join(
         'http://snapshots.ros.org',
         str(ros_distro),
@@ -18,7 +21,6 @@ if isDistroEOL(ros_distro_status=dist_info['distribution_status'], os_distro_nam
     repo_key = '4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA'
     source_suffix = 'snapshots'
 else:
-    repo_key = 'C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'
     apt_suffix = '2' if ros_version == 2 else ''
     source_suffix = 'latest'
     if 'testing_repo' in locals():
@@ -26,12 +28,30 @@ else:
             apt_suffix += '-testing'
             source_suffix = 'testing'
     repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
+
+# Retrieve ros-apt-source packages version number
+http = urllib3.PoolManager()
+resp = http.request("GET", "https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest")
+ros_apt_source_version = json.loads(resp.data)["tag_name"]
+
 }@
 
-# NOTE: this doesnt deal with snapshots repo as not clear what to install for those..
-# NOTE: How do we break cache and ensure rebuild if that version changes ?
-RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}') ;\
-    curl -L -s -o /tmp/ros@(apt_suffix)-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros@(apt_suffix)-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" \
+@[if is_distro_eol]@
+# setup keys
+RUN set -eux; \
+       key='@(repo_key)'; \
+       export GNUPGHOME="$(mktemp -d)"; \
+       gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+       mkdir -p /usr/share/keyrings; \
+       gpg --batch --export "$key" > /usr/share/keyrings/ros@(ros_version)-@(source_suffix)-archive-keyring.gpg; \
+       gpgconf --kill all; \
+       rm -rf "$GNUPGHOME"
+
+# setup sources.list
+RUN echo "deb [ signed-by=/usr/share/keyrings/ros@(ros_version)-@(source_suffix)-archive-keyring.gpg ] @(repo_url) @(os_code_name) main" > /etc/apt/sources.list.d/ros@(ros_version)-@(source_suffix).list
+@[else]@
+RUN curl -L -s -o /tmp/ros@(apt_suffix)-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/@(ros_apt_source_version)/ros@(apt_suffix)-apt-source_@(ros_apt_source_version).$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" \
     && apt-get update \
     && apt-get install /tmp/ros@(apt_suffix)-apt-source.deb \
     && rm -f /tmp/ros@(apt_suffix)-apt-source.deb
+@[end if]@
