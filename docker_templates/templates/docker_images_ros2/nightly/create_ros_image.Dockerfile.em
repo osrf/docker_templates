@@ -20,11 +20,12 @@
 ))@
 @{
 template_dependencies = [
+    'ca-certificates',
     'cmake',
+    'curl',
     'dirmngr',
     'git',
     'gnupg2',
-    'lsb-release',
     'wget',
 ]
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared

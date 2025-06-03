@@ -13,9 +13,10 @@ FROM $FROM_IMAGE
 ))@
 @{
 template_dependencies = [
+    'ca-certificates',
+    'curl',
     'dirmngr',
     'gnupg2',
-    'lsb-release',
 ]
 # add 'python3-pip' to 'template_dependencies' if pip dependencies are declared
 if 'pip3_install' in locals():
