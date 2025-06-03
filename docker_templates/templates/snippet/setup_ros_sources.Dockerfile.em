@@ -1,5 +1,8 @@
 @{
+import distro
+import hashlib
 import os
+import requests
 
 import rosdistro
 index = rosdistro.get_index(rosdistro.get_index_url())
@@ -26,12 +29,28 @@ else:
             apt_suffix += '-testing'
             source_suffix = 'testing'
     repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
+
+# Get the latest tag
+r = requests.get('https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest')
+tag_name = r.json().get('tag_name')
+
+# Get the latest version and compute the checksum
+fetch_url = f"https://github.com/ros-infrastructure/ros-apt-source/releases/download/{tag_name}/ros{apt_suffix}-apt-source_{tag_name}.{os_code_name}_all.deb"
+try:
+    r = requests.get(fetch_url)
+    hashobj = hashlib.sha256(r.content)
+    file_256checksum = hashobj.hexdigest()
+except Exception as e:
+    file_256checksum = f"ERROR Failed to compute checksum for {fetch_url} do not accept image. Exception: {e}"
+
+# Temp filename for simplicity of embedding
+temp_filename = f"/tmp/ros{apt_suffix}-apt-source.deb"
 }@
 
-# NOTE: this doesnt deal with snapshots repo as not clear what to install for those..
-# NOTE: How do we break cache and ensure rebuild if that version changes ?
-RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}') ;\
-    curl -L -s -o /tmp/ros@(apt_suffix)-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros@(apt_suffix)-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" \
+# Setup ROS Apt sources
+RUN curl -L -s -o @(temp_filename) @(fetch_url) \
+    && echo "@(file_256checksum) @(temp_filename)" | sha256sum --strict --check \
     && apt-get update \
-    && apt-get install /tmp/ros@(apt_suffix)-apt-source.deb \
-    && rm -f /tmp/ros@(apt_suffix)-apt-source.deb
+    && apt-get install @(temp_filename) \
+    && rm -f @(temp_filename) \
+    && rm -rf /var/lib/apt/lists/*
