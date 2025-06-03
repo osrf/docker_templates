@@ -33,15 +33,13 @@ if 'pip3_install' in locals():
     'snippet/setup_ros_sources.Dockerfile.em',
     os_name=os_name,
     os_code_name=os_code_name,
-    ros2distro_name='rolling',
-    rosdistro_name='',
-    ros_version=ros_version,
+    ros_distro='rolling',
     testing_repo=True,
 ))@
 
 @(TEMPLATE(
     'snippet/install_ros_bootstrap_tools.Dockerfile.em',
-    ros_version=ros_version,
+    ros_distro='rolling',
 ))@
 
 # setup environment
