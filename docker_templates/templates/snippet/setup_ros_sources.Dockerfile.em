@@ -31,21 +31,21 @@ else:
             source_suffix = 'testing'
     repo_url = f'http://packages.ros.org/ros{apt_suffix}/ubuntu'
 
-# Get the latest tag
-ros_apt_source_latest = requests.get('https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest')
-tag_name = ros_apt_source_latest.json().get('tag_name')
+    # Get the latest tag
+    ros_apt_source_latest = requests.get('https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest')
+    tag_name = ros_apt_source_latest.json().get('tag_name')
 
-# Get the latest version and compute the checksum
-fetch_url = f"https://github.com/ros-infrastructure/ros-apt-source/releases/download/{tag_name}/ros{apt_suffix}-apt-source_{tag_name}.{os_code_name}_all.deb"
-try:
-    ros_apt_source_deb = requests.get(fetch_url)
-    hashobj = hashlib.sha256(ros_apt_source_deb.content)
-    file_256checksum = hashobj.hexdigest()
-except Exception as e:
-    file_256checksum = f"ERROR Failed to compute checksum for {fetch_url} do not accept image. Exception: {e}"
+    # Get the latest version and compute the checksum
+    fetch_url = f"https://github.com/ros-infrastructure/ros-apt-source/releases/download/{tag_name}/ros{apt_suffix}-apt-source_{tag_name}.{os_code_name}_all.deb"
+    try:
+        ros_apt_source_deb = requests.get(fetch_url)
+        hashobj = hashlib.sha256(ros_apt_source_deb.content)
+        file_256checksum = hashobj.hexdigest()
+    except Exception as e:
+        file_256checksum = f"ERROR Failed to compute checksum for {fetch_url} do not accept image. Exception: {e}"
 
-# Temp filename for simplicity of embedding
-temp_filename = f"/tmp/ros{apt_suffix}-apt-source.deb"
+    # Temp filename for simplicity of embedding
+    temp_filename = f"/tmp/ros{apt_suffix}-apt-source.deb"
 }@
 
 @[if is_distro_eol]@
