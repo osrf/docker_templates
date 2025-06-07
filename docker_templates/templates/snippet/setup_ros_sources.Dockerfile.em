@@ -62,7 +62,7 @@ RUN set -eux; \
 # setup sources.list
 RUN echo "deb [ signed-by=/usr/share/keyrings/ros@(ros_version)-@(source_suffix)-archive-keyring.gpg ] @(repo_url) @(os_code_name) main" > /etc/apt/sources.list.d/ros@(ros_version)-@(source_suffix).list
 @[else]@
-# Setup ROS APT sources
+# Setup ROS Apt sources
 RUN curl -L -s -o @(temp_filename) @(fetch_url) \
     && echo "@(file_256checksum) @(temp_filename)" | sha256sum --strict --check \
     && apt-get update \
