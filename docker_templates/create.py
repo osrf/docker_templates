@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import importlib
 import os
-import pkg_resources
 import shutil
 
 import ros_buildfarm.templates
@@ -29,8 +29,8 @@ def expand_template_prefix_path(template_packages):
 
     # expand template_prefix_path in order of preference
     for template_package in reversed(template_packages):
-        template_package_path = pkg_resources.resource_filename(
-            template_package, 'templates')
+        template_package_path = importlib.resources.files(
+            template_package) / 'templates'
         ros_buildfarm.templates.template_prefix_path.insert(
             0, template_package_path)
 
