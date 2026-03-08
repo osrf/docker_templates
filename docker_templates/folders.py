@@ -2,20 +2,33 @@ import os
 import shutil
 import string
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+from em import Interpreter
+
 
 class AltTemplate(string.Template):
     delimiter = '@'
     idpattern = r'[a-z][_a-z0-9]*'
 
 
-def interpret_tempate(tempate, data, tempate_class=string.Template):
-    # Read image perams using platform perams
-    with open(tempate, 'r') as f:
-        value = tempate_class(f.read())
+def interpret_tempate(tempate, data):
 
-    value = value.substitute(data)
+    output = StringIO()
+    try:
+        interpreter = Interpreter(output=output)
+        interpreter.file(open(tempate, 'r'), locals=data)
+        output = output.getvalue()
+    except Exception as e:
+        print("Error processing %s" % tempate)
+        raise
+    finally:
+        interpreter.shutdown()
+        interpreter = None
 
-    return value
+    return output
 
 
 def populate_path(data, path):
@@ -37,21 +50,6 @@ def populate_path(data, path):
     shutil.copy(templates['images'], path)
 
 
-def populate_hooks(data, path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-    for hook_name, hook_tempate in data['hook_names'].items():
-        tags = ' '.join([data['release_name'] + '-' + data['tag_name']])
-        hookfile = interpret_tempate(
-            hook_tempate,
-            {'tags': tags, 'release_name': data['release_name']},
-            AltTemplate)
-        hookfile_path = os.path.join(path, hook_name)
-        with open(hookfile_path, 'w') as f:
-            f.write(hookfile)
-        os.chmod(hookfile_path, 0o744)
-
-
 def populate_paths(manifest, args, create_dockerfiles):
     # For each release
     for release_name, release_data in manifest['release_names'].items():
@@ -66,32 +64,10 @@ def populate_paths(manifest, args, create_dockerfiles):
                 os_code_data['release_name'] = release_name
                 os_code_data['os_name'] = os_name
                 os_code_data['os_code_name'] = os_code_name
+                os_code_data['archs'] = os_code_data['archs']
 
                 populate_path(data=os_code_data, path=dockerfolder_dir)
 
                 if args.auto:
                     # Run the dockerfile generation script
                     create_dockerfiles.main(('dir', '-d' + dockerfolder_dir))
-
-    # Hacks to add hook scripts for osrf repos
-    if 'hacks' in manifest:
-        # For each release
-        for release_name, release_data in manifest['hacks'].items():
-            # For each os supported
-            for os_name, os_data in release_data['os_names'].items():
-                # For each os distro supported
-                for os_code_name, os_code_data in os_data['os_code_names'].items():
-                    if os_code_data['tag_names'] is None:
-                        continue
-                    # For each tag supported:
-                    for tag_name, tag_data in os_code_data['tag_names'].items():
-                        hooksfolder_dir = os.path.join(
-                            release_name, os_name,
-                            os_code_name,
-                            tag_name,
-                            'hooks')
-                        tag_data['release_name'] = release_name
-                        tag_data['os_name'] = os_name
-                        tag_data['os_code_name'] = os_code_name
-                        tag_data['tag_name'] = tag_name
-                        populate_hooks(tag_data, hooksfolder_dir)

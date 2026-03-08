@@ -36,8 +36,9 @@ RUN rosdep init && \
 @[if 'ros_packages' in locals()]@
 @[  if ros_packages]@
 @(TEMPLATE(
-    'snippet/label_and_install_package_list.Dockerfile.em',
+    'snippet/copy_and_install_package_list.Dockerfile.em',
     group='ros',
+    package_type='ros_packages',
     packages=ros_packages,
 ))@
 @[  end if]@
