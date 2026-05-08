@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import importlib
+from importlib import resources
 import os
 import shutil
 
