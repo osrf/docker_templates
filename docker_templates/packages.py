@@ -37,6 +37,7 @@ indexUrlTemplateLookup = {
     'gazebo_packages':  string.Template('http://packages.osrfoundation.org/gazebo/$os_name-$release/dists/$os_code_name/main/binary-$arch/Packages.gz'),
     'ros_packages':     string.Template('http://packages.ros.org/ros/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
     'ros2_packages':    string.Template('http://packages.ros.org/ros2/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
+    'ros2_packages_testing':    string.Template('http://packages.ros.org/ros2-testing/ubuntu/dists/$os_code_name/main/binary-$arch/Packages.gz'),
     'ros_packages_snapshots':    string.Template('http://snapshots.ros.org/$rosdistro_name/final/$os_name/dists/$os_code_name/main/binary-$arch/Packages.gz'),
     'ros2_packages_snapshots':    string.Template('http://snapshots.ros.org/$ros2distro_name/final/$os_name/dists/$os_code_name/main/binary-$arch/Packages.gz'),
 }
@@ -115,7 +116,7 @@ def getPackageVersions(data, package_index, packages, package_type):
         if data['version'] != False:
             version = getPackageVersion(package_info)
             package_version = package_version_template.substitute(data, package_version=version)
-        else:        
+        else:
             package_version=''
 
         package_versions.append(dict(name=package_name, version=package_version, sha256=package_sha256))
@@ -131,6 +132,7 @@ def expandPackages(data):
                 ros_distro_name = data["rosdistro_name"]
             elif package_type == "ros2_packages":
                 ros_distro_name = data["ros2distro_name"]
+            is_rolling = False
             if ros_distro_name != "":
                 index = rosdistro.get_index(rosdistro.get_index_url())
                 dist_info = index.distributions[ros_distro_name]
@@ -138,6 +140,7 @@ def expandPackages(data):
                     ros_distro_status=dist_info["distribution_status"],
                     os_distro_name=data["os_code_name"],
                 )
+                is_rolling = dist_info["distribution_status"] == "rolling"
             else:
                 eol = isDistroEOL(
                     ros_distro_status=None,
@@ -145,6 +148,8 @@ def expandPackages(data):
                 )
             if eol:
                 package_index_url_template = indexUrlTemplateLookup[package_type + '_snapshots']
+            elif is_rolling:
+                package_index_url_template = indexUrlTemplateLookup[package_type + '_testing']
             else:
                 package_index_url_template = indexUrlTemplateLookup[package_type]
             package_index_url = package_index_url_template.substitute(data)
