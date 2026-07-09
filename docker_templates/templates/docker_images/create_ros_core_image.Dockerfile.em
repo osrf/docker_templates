@@ -45,6 +45,7 @@ template_dependencies = [
     os_name=os_name,
     os_code_name=os_code_name,
     ros_distro=rosdistro_name,
+    testing_repo=testing_repo if 'testing_repo' in locals() else False,
 ))@
 
 # setup environment
