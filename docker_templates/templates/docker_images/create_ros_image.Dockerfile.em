@@ -42,3 +42,11 @@ RUN rosdep init && \
 ))@
 @[  end if]@
 @[end if]@
+@[if 'post_env' in locals()]@
+@[  if post_env]@
+# set environment variables
+@[    for env_key, env_value in post_env.items()]@
+ENV @(env_key) @(env_value)
+@[    end for]@
+@[  end if]@
+@[end if]@
